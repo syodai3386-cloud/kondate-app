@@ -2259,5 +2259,166 @@
     "allergens": ["大豆"],
     "steps": ["ほうれん草(0.3束)は3cm幅、油揚げ(1枚)は短冊に切る", "だし汁を煮立てる", "ほうれん草と油揚げを加えてさっと煮る", "味噌を溶き入れて完成"],
     "imageUrl": "https://image.space.rakuten.co.jp/d/strg/ctrl/3/258d141f6247ebbbaef76aa3d6b986a9f9489def.97.2.3.2.jpg", "sourceUrl": "https://recipe.rakuten.co.jp/recipe/1150016050/"
+  },
+  {
+    "id": "r201", "name": "里芋と鶏肉の煮物", "genre": "和食", "tags": ["里芋", "体が温まる", "定番"], "servings": 2,
+    "ingredients": [{ "name": "里芋", "category": "野菜", "amount": "8個" }, { "name": "鶏肉", "category": "肉", "amount": "150g" }, { "name": "人参", "category": "野菜", "amount": "0.3本" }],
+    "allergens": [],
+    "steps": ["里芋(8個)は塩もみしてぬめりを取る", "鶏肉(150g)は一口大に切る", "鍋で鶏肉を炒め、里芋・人参(0.3本)を加える", "醤油・酒・砂糖・和風だしの素・水を加えて柔らかく煮て完成"],
+    "imageUrl": "https://image.space.rakuten.co.jp/d/strg/ctrl/3/59aa49bec77ea05089c7a7a34b79e8e11e45e173.18.2.3.2.jpg", "sourceUrl": "https://recipe.rakuten.co.jp/recipe/1560010142/"
+  },
+  {
+    "id": "r202", "name": "大根と厚揚げの煮物", "genre": "和食", "tags": ["厚揚げ", "体が温まる", "作り置き向き"], "servings": 2,
+    "ingredients": [{ "name": "大根", "category": "野菜", "amount": "0.4本" }, { "name": "豚肉", "category": "肉", "amount": "100g" }, { "name": "厚揚げ", "category": "豆腐・大豆製品", "amount": "1枚" }],
+    "allergens": ["大豆"],
+    "steps": ["大根(0.4本)は輪切り、厚揚げ(1枚)は一口大に切る", "豚バラ肉(100g)と生姜を炒める", "大根・厚揚げを加える", "水・和風だしの素・醤油・酒・砂糖・みりんを加えて柔らかく煮て完成"],
+    "imageUrl": "https://image.space.rakuten.co.jp/d/strg/ctrl/3/f076d3d30d35313743c5f5692987d0820bc4aeda.40.9.3.3.jpg", "sourceUrl": "https://recipe.rakuten.co.jp/recipe/1930022698/"
+  },
+  {
+    "id": "r203", "name": "基本のきんぴらごぼう", "genre": "和食", "tags": ["ごぼう", "副菜", "作り置き向き"], "servings": 2,
+    "ingredients": [{ "name": "ごぼう", "category": "野菜", "amount": "1本" }, { "name": "人参", "category": "野菜", "amount": "0.3本" }],
+    "allergens": [],
+    "steps": ["ごぼう(1本)はささがき、人参(0.3本)は細切りにする", "ごま油で炒める", "酒・だし汁を加えて煮る", "みりん・醤油で味付けし七味と白ごまをふって完成"],
+    "imageUrl": "https://image.space.rakuten.co.jp/d/strg/ctrl/3/7b476d17b93da358ab1b5272ccee9596476a4f83.47.1.3.2.jpg", "sourceUrl": "https://recipe.rakuten.co.jp/recipe/1980000098/"
+  },
+  {
+    "id": "r204", "name": "かぼちゃとじゃがいもの煮物", "genre": "和食", "tags": ["かぼちゃ", "副菜", "作り置き向き"], "servings": 2,
+    "ingredients": [{ "name": "かぼちゃ", "category": "野菜", "amount": "0.25個" }, { "name": "じゃがいも", "category": "野菜", "amount": "2個" }],
+    "allergens": [],
+    "steps": ["かぼちゃ(0.25個)・じゃがいも(2個)は一口大に切る", "鍋に入れ醤油・砂糖・みりん・酒・水を加える", "落し蓋をして煮る", "柔らかくなったら完成"],
+    "imageUrl": "https://image.space.rakuten.co.jp/d/strg/ctrl/3/fa2aff73e51711f99f225fc5262ed3b539414936.38.2.3.2.jpg", "sourceUrl": "https://recipe.rakuten.co.jp/recipe/1940013739/"
+  },
+  {
+    "id": "r205", "name": "牛肉のしょうゆ甘から煮", "genre": "和食", "tags": ["牛肉", "ご飯に合う", "時短"], "servings": 2,
+    "ingredients": [{ "name": "牛肉", "category": "肉", "amount": "200g" }],
+    "allergens": [],
+    "steps": ["牛肉(200g)は食べやすく切る", "フライパンで軽く炒める", "酒・みりん・醤油を加える", "汁気がなくなるまで煮絡めて完成"],
+    "imageUrl": "https://image.space.rakuten.co.jp/d/strg/ctrl/3/d5af2a1c79e87ba29abba3d473cad9ffd8094b8b.26.2.3.2.jpg", "sourceUrl": "https://recipe.rakuten.co.jp/recipe/1750060567/"
+  },
+  {
+    "id": "r206", "name": "れんこんのきんぴら", "genre": "和食", "tags": ["れんこん", "副菜", "作り置き向き"], "servings": 2,
+    "ingredients": [{ "name": "れんこん", "category": "野菜", "amount": "1節" }, { "name": "人参", "category": "野菜", "amount": "0.3本" }],
+    "allergens": [],
+    "steps": ["れんこん(1節)は薄いいちょう切り、人参(0.3本)は細切りにする", "ごま油で炒める", "だし汁・醤油・砂糖・みりんを加える", "汁気がなくなるまで炒め白ごまをふって完成"],
+    "imageUrl": "https://image.space.rakuten.co.jp/d/strg/ctrl/3/61caf93e413be1dc3630e91fa6aa7e3580a9e274.64.2.3.2.jpg", "sourceUrl": "https://recipe.rakuten.co.jp/recipe/1670001861/"
+  },
+  {
+    "id": "r207", "name": "さんまの甘露煮", "genre": "和食", "tags": ["さんま", "秋", "作り置き向き"], "servings": 2,
+    "ingredients": [{ "name": "さんま", "category": "魚", "amount": "2尾" }],
+    "allergens": [],
+    "steps": ["さんま(2尾)は筒切りにする", "鍋に生姜と並べる", "砂糖・酒・酢・みりん・醤油・水を加える", "落し蓋をして骨まで柔らかくなるまで煮て完成"],
+    "imageUrl": "https://image.space.rakuten.co.jp/d/strg/ctrl/3/7d6ea5c058dcde61a1e55ce276730a239fc21cd9.60.9.3.3.jpg", "sourceUrl": "https://recipe.rakuten.co.jp/recipe/1820031596/"
+  },
+  {
+    "id": "r208", "name": "お肉屋さんのメンチカツ", "genre": "洋食", "tags": ["ひき肉", "がっつり", "お弁当"], "servings": 2,
+    "ingredients": [{ "name": "ひき肉", "category": "肉", "amount": "300g" }, { "name": "玉ねぎ", "category": "野菜", "amount": "0.5個" }],
+    "allergens": ["卵", "小麦"],
+    "steps": ["玉ねぎ(0.5個)はみじん切りにして炒め冷ます", "合いびき肉(300g)・玉ねぎ・卵・パン粉・牛乳・調味料を混ぜて成形する", "小麦粉・卵・パン粉の順に衣をつける", "170℃の油できつね色に揚げて完成"],
+    "imageUrl": "https://image.space.rakuten.co.jp/d/strg/ctrl/3/c3a50e98b628e8bed9c109b6e76afea696c0dd5e.46.2.3.2.jpg", "sourceUrl": "https://recipe.rakuten.co.jp/recipe/1050008828/"
+  },
+  {
+    "id": "r209", "name": "ボリューム満点チキンカツ", "genre": "洋食", "tags": ["鶏肉", "がっつり"], "servings": 2,
+    "ingredients": [{ "name": "鶏肉", "category": "肉", "amount": "300g" }, { "name": "卵", "category": "卵・乳", "amount": "1個" }],
+    "allergens": ["卵", "小麦"],
+    "steps": ["鶏もも肉(300g)は開いて厚みを均一にし生姜・塩こしょうで下味をつける", "小麦粉・卵(1個)・パン粉の順にまとわせる", "170℃の油でじっくり揚げる", "食べやすく切って完成"],
+    "imageUrl": "https://image.space.rakuten.co.jp/d/strg/ctrl/3/0a94fbffdb0a591a122f6f2ee3820d55f7587890.56.9.3.3.jpg", "sourceUrl": "https://recipe.rakuten.co.jp/recipe/1550015502/"
+  },
+  {
+    "id": "r210", "name": "手羽元フライドチキン", "genre": "洋食", "tags": ["鶏肉", "子供に人気", "がっつり"], "servings": 2,
+    "ingredients": [{ "name": "鶏肉", "category": "肉", "amount": "8本" }, { "name": "卵", "category": "卵・乳", "amount": "1個" }],
+    "allergens": ["卵", "小麦"],
+    "steps": ["鶏手羽元(8本)ににんにく・生姜・コンソメ・卵(1個)・黒胡椒で下味をつけ15分漬ける", "小麦粉と片栗粉を合わせてまぶす", "170℃の油でじっくり揚げる", "中まで火が通ったら完成"],
+    "imageUrl": "https://image.space.rakuten.co.jp/d/strg/ctrl/3/5c3ce8773c2090ace10f305ef9b5ce6ae6778910.93.2.3.2.jpg", "sourceUrl": "https://recipe.rakuten.co.jp/recipe/1830003033/"
+  },
+  {
+    "id": "r211", "name": "手作りチキンナゲット", "genre": "洋食", "tags": ["鶏肉", "子供に人気", "お弁当"], "servings": 2,
+    "ingredients": [{ "name": "鶏ひき肉", "category": "肉", "amount": "250g" }, { "name": "豆腐", "category": "豆腐・大豆製品", "amount": "0.3丁" }],
+    "allergens": ["卵", "小麦", "大豆"],
+    "steps": ["鶏むねひき肉(250g)・豆腐(0.3丁)・薄力粉・マヨネーズ・生姜・卵・調味料を混ぜる", "食べやすい大きさに成形する", "薄力粉をまぶす", "170℃の油できつね色に揚げて完成"],
+    "imageUrl": "https://image.space.rakuten.co.jp/d/strg/ctrl/3/e7d8897188abc6f73f25e86615892df7cfa5a6ad.02.2.3.2.jpg", "sourceUrl": "https://recipe.rakuten.co.jp/recipe/1830001083/"
+  },
+  {
+    "id": "r212", "name": "とり天", "genre": "和食", "tags": ["鶏肉", "ご当地", "がっつり"], "servings": 2,
+    "ingredients": [{ "name": "鶏肉", "category": "肉", "amount": "300g" }],
+    "allergens": ["小麦"],
+    "steps": ["鶏むね肉(300g)を一口大に切る", "塩麹・麺つゆ・酒・生姜・にんにくに漬け込む", "天ぷら粉を水で溶いた衣をつける", "油でカラッと揚げて完成"],
+    "imageUrl": "https://image.space.rakuten.co.jp/d/strg/ctrl/3/e066ba3eaac8e2d65d7c398789b2bf571680b2ff.51.9.3.3.jpg", "sourceUrl": "https://recipe.rakuten.co.jp/recipe/1150024682/"
+  },
+  {
+    "id": "r213", "name": "骨付きチキンのスープカレー", "genre": "洋食", "tags": ["鶏肉", "スープカレー", "ごちそう"], "servings": 2,
+    "ingredients": [{ "name": "鶏肉", "category": "肉", "amount": "6本" }, { "name": "玉ねぎ", "category": "野菜", "amount": "1個" }, { "name": "じゃがいも", "category": "野菜", "amount": "1個" }, { "name": "人参", "category": "野菜", "amount": "0.5本" }],
+    "allergens": [],
+    "steps": ["鶏手羽元(6本)と玉ねぎ(1個)・にんにくを炒める", "カレー粉を加えて香りを出す", "水・野菜ジュース・鶏がらスープの素・ウスターソースを加えて煮込む", "じゃがいも(1個)・人参(0.5本)・ピーマンを加えて煮て完成"],
+    "imageUrl": "https://image.space.rakuten.co.jp/d/strg/ctrl/3/6311d37a54b75e98268d797b806df5f2656a68e5.78.2.3.2.jpg", "sourceUrl": "https://recipe.rakuten.co.jp/recipe/1540004932/"
+  },
+  {
+    "id": "r214", "name": "ホテル仕様の欧風ビーフカレー", "genre": "洋食", "tags": ["牛肉", "ごちそう", "おもてなし"], "servings": 2,
+    "ingredients": [{ "name": "牛肉", "category": "肉", "amount": "300g" }, { "name": "玉ねぎ", "category": "野菜", "amount": "1個" }],
+    "allergens": ["小麦"],
+    "steps": ["牛もも肉(300g)に塩こしょう・小麦粉をまぶす", "玉ねぎ(1個)をじっくり飴色になるまで炒める", "肉を加えて炒め、カレー粉・赤ワイン・トマトペーストを加える", "水・コンソメ・調味料を加えて煮込んで完成"],
+    "imageUrl": "https://image.space.rakuten.co.jp/d/strg/ctrl/3/2d1ece8ba978ef0d517b21533374aca917ed4891.45.9.3.3.jpg", "sourceUrl": "https://recipe.rakuten.co.jp/recipe/1030026520/"
+  },
+  {
+    "id": "r215", "name": "さば缶の簡単キーマカレー", "genre": "洋食", "tags": ["さば", "時短", "節約"], "servings": 2,
+    "ingredients": [{ "name": "さば", "category": "魚", "amount": "1缶" }, { "name": "玉ねぎ", "category": "野菜", "amount": "1個" }, { "name": "ピーマン", "category": "野菜", "amount": "1個" }, { "name": "人参", "category": "野菜", "amount": "0.3本" }],
+    "allergens": ["小麦"],
+    "steps": ["玉ねぎ(1個)・ピーマン(1個)・人参(0.3本)はみじん切りにする", "油で野菜を炒める", "さば缶(1缶)を汁ごと加えてほぐしながら炒める", "ケチャップ・水・カレールウを加えて煮詰めて完成"],
+    "imageUrl": "https://image.space.rakuten.co.jp/d/strg/ctrl/3/6ea6f7e1b2257f3b2dfe9b9af7ff314aada5588c.74.9.3.3.jpg", "sourceUrl": "https://recipe.rakuten.co.jp/recipe/1420026017/"
+  },
+  {
+    "id": "r216", "name": "さわらのみぞれ煮", "genre": "和食", "tags": ["さわら", "さっぱり"], "servings": 2,
+    "ingredients": [{ "name": "さわら", "category": "魚", "amount": "2切れ" }, { "name": "大根", "category": "野菜", "amount": "5cm" }],
+    "allergens": ["小麦"],
+    "steps": ["さわら(2切れ)は塩をふり小麦粉をまぶす", "フライパンで両面焼く", "大根(5cm)はすりおろし、醤油・酒・みりん・酢・和風だしの素と混ぜる", "さわらにかけて煮て完成"],
+    "imageUrl": "https://image.space.rakuten.co.jp/d/strg/ctrl/3/69a24bac72e678078b8eab3a53b73cc1320ea144.45.9.3.3.jpg", "sourceUrl": "https://recipe.rakuten.co.jp/recipe/1030027376/"
+  },
+  {
+    "id": "r217", "name": "ししゃもの竜田揚げ", "genre": "和食", "tags": ["ししゃも", "おつまみ"], "servings": 2,
+    "ingredients": [{ "name": "ししゃも", "category": "魚", "amount": "8尾" }],
+    "allergens": [],
+    "steps": ["ししゃも(8尾)を醤油・みりん・酒・生姜・にんにくに10分漬ける", "水気をふき取り片栗粉をまぶす", "油でカリッと揚げる", "お好みでレモンを添えて完成"],
+    "imageUrl": "https://image.space.rakuten.co.jp/d/strg/ctrl/3/53b296b867d421d565d2cbb575e8a9e56fefdfa3.20.2.3.2.jpg", "sourceUrl": "https://recipe.rakuten.co.jp/recipe/1570010934/"
+  },
+  {
+    "id": "r218", "name": "金目鯛の甘辛煮付け", "genre": "和食", "tags": ["鯛", "ごちそう"], "servings": 2,
+    "ingredients": [{ "name": "金目鯛", "category": "魚", "amount": "2切れ" }],
+    "allergens": [],
+    "steps": ["金目鯛(2切れ)は熱湯をかけて霜降りする", "ごぼうと長ねぎを用意する", "醤油・酒・みりん・砂糖を煮立て金目鯛を加える", "落し蓋をして煮て完成"],
+    "imageUrl": "https://image.space.rakuten.co.jp/d/strg/ctrl/3/b0a41c9c0459eb86a49c284dbae16d853746b09d.52.2.3.2.jpg", "sourceUrl": "https://recipe.rakuten.co.jp/recipe/1490003746/"
+  },
+  {
+    "id": "r219", "name": "ヒラメの煮付け", "genre": "和食", "tags": ["ヒラメ", "定番"], "servings": 2,
+    "ingredients": [{ "name": "ヒラメ", "category": "魚", "amount": "2切れ" }],
+    "allergens": [],
+    "steps": ["ヒラメ(2切れ)は熱湯をかけて霜降りする", "酒・醤油・砂糖・みりんを煮立てる", "ヒラメを加えて煮る", "煮汁をかけながら盛り付けて完成"],
+    "imageUrl": "https://image.space.rakuten.co.jp/d/strg/ctrl/3/dd173761bbb12032d890eded733aa95542bb1c91.08.2.3.2.jpg", "sourceUrl": "https://recipe.rakuten.co.jp/recipe/1070006156/"
+  },
+  {
+    "id": "r220", "name": "ほっけの竜田揚げ", "genre": "和食", "tags": ["ほっけ", "おつまみ"], "servings": 2,
+    "ingredients": [{ "name": "ほっけ", "category": "魚", "amount": "1枚" }],
+    "allergens": [],
+    "steps": ["ほっけ(1枚)は三枚おろしにして食べやすく切る", "酒・生姜・醤油に漬ける", "片栗粉をまぶす", "油で揚げて青じそを添え完成"],
+    "imageUrl": "https://image.space.rakuten.co.jp/d/strg/ctrl/3/2934c754d6fea1c710fa52a1ad92fb45ad62822b.65.9.3.3.jpg", "sourceUrl": "https://recipe.rakuten.co.jp/recipe/1840044030/"
+  },
+  {
+    "id": "r221", "name": "豆腐とアボカドのわかめ和え", "genre": "和食", "tags": ["豆腐", "ヘルシー", "時短"], "servings": 2,
+    "ingredients": [{ "name": "アボカド", "category": "野菜", "amount": "1個" }, { "name": "豆腐", "category": "豆腐・大豆製品", "amount": "0.5丁" }],
+    "allergens": ["大豆"],
+    "steps": ["アボカド(1個)は角切り、豆腐(0.5丁)は崩す", "乾燥わかめを水で戻す", "全て混ぜる", "ごま油とポン酢をかけて完成"],
+    "imageUrl": "https://image.space.rakuten.co.jp/d/strg/ctrl/3/7142b93cc958fb54bbb1e832af6823fdefb67994.74.9.3.3.jpg", "sourceUrl": "https://recipe.rakuten.co.jp/recipe/1420021917/"
+  },
+  {
+    "id": "r222", "name": "小エビのカクテルサラダ", "genre": "洋食", "tags": ["えび", "おもてなし", "さっぱり"], "servings": 2,
+    "ingredients": [{ "name": "えび", "category": "魚", "amount": "150g" }, { "name": "人参", "category": "野菜", "amount": "0.3本" }],
+    "allergens": ["えび"],
+    "steps": ["むきえび(150g)は下茹でする", "レタス・人参(0.3本)・ミニトマトは食べやすく切る", "ケチャップ・マヨネーズ・レモン汁でソースを作る", "全て盛り付けソースをかけて完成"],
+    "imageUrl": "https://image.space.rakuten.co.jp/d/strg/ctrl/3/a861cc38c0ea1f908c810133a8388ae10bfb7d21.12.2.3.2.jpg", "sourceUrl": "https://recipe.rakuten.co.jp/recipe/1510021179/"
+  },
+  {
+    "id": "r223", "name": "アボカドとトマトのポン酢和え", "genre": "その他", "tags": ["トマト", "さっぱり", "時短"], "servings": 2,
+    "ingredients": [{ "name": "アボカド", "category": "野菜", "amount": "1個" }, { "name": "トマト", "category": "野菜", "amount": "1個" }],
+    "allergens": ["大豆"],
+    "steps": ["アボカド(1個)・トマト(1個)は角切りにする", "ポン酢・白いりごま・ごま油を混ぜる", "アボカドとトマトを和える", "にんにくチューブで風味を加えて完成"],
+    "imageUrl": "https://image.space.rakuten.co.jp/d/strg/ctrl/3/2a2583b5754f10a9fcb06af1a9b80b05fb2a8aef.74.9.3.3.jpg", "sourceUrl": "https://recipe.rakuten.co.jp/recipe/1420021576/"
   }
 ]
