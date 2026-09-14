@@ -57,6 +57,7 @@ function renderRecipeCard({ recipe, reasons, usedIngredients }, { store, rerende
   card.className = "card recipe-card";
   card.innerHTML = `
     ${label ? `<div class="badge ok" style="margin-bottom:6px;">${label}</div>` : ""}
+    ${recipe.imageUrl ? `<img src="${recipe.imageUrl}" alt="${recipe.name}" class="recipe-photo" />` : ""}
     <h3>${recipe.name}</h3>
     <div class="tag-list">
       <span class="tag">${recipe.genre}</span>
@@ -85,6 +86,11 @@ function renderRecipeCard({ recipe, reasons, usedIngredients }, { store, rerende
         ${recipe.steps.map((s) => `<li>${s}</li>`).join("")}
       </ol>
     </details>
+    ${
+      recipe.sourceUrl
+        ? `<p class="item-sub"><a href="${recipe.sourceUrl}" target="_blank" rel="noopener">楽天レシピで元のレシピを見る（写真・投稿者コメントなど）</a></p>`
+        : ""
+    }
     <div class="recipe-actions">
       <button class="primary" data-action="cooked">作った</button>
       <button class="secondary" data-action="shopping">不足食材を買い物リストに追加</button>
