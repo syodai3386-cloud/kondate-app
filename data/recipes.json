@@ -1159,5 +1159,132 @@
     ],
     "imageUrl": "https://image.space.rakuten.co.jp/d/strg/ctrl/3/832e287a89b953a1f56cabf29a1715ea00217e60.12.2.3.2.jpg",
     "sourceUrl": "https://recipe.rakuten.co.jp/recipe/1510020794/"
+  },
+  {
+    "id": "r056",
+    "name": "鶏手羽元のトマト煮込み",
+    "genre": "洋食",
+    "tags": ["果物・季節料理", "ごちそう", "体が温まる"],
+    "servings": 2,
+    "ingredients": [
+      { "name": "鶏肉", "category": "肉", "amount": "6本" },
+      { "name": "なす", "category": "野菜", "amount": "1本" },
+      { "name": "玉ねぎ", "category": "野菜", "amount": "0.5個" },
+      { "name": "トマト", "category": "野菜", "amount": "2個" }
+    ],
+    "allergens": ["乳"],
+    "steps": [
+      "鶏手羽元(6本)に塩こしょうをふり、オリーブオイルで焼き色をつける",
+      "なす(1本)・玉ねぎ(0.5個)・きのこは食べやすく切って加え炒める",
+      "にんにく・固形コンソメ・トマト(2個・またはトマト缶)・酒・砂糖を加える",
+      "蓋をして弱火で30分ほど煮込む",
+      "塩こしょうで味を調え、粉チーズをふって完成"
+    ],
+    "imageUrl": "https://image.space.rakuten.co.jp/d/strg/ctrl/3/aa3b2c590cab27b3678e9bc9829f69830f289dc6.30.9.3.3.jpg",
+    "sourceUrl": "https://recipe.rakuten.co.jp/recipe/1000024073/"
+  },
+  {
+    "id": "r057",
+    "name": "豚肉となすの味噌炒め",
+    "genre": "和食",
+    "tags": ["夏", "ご飯に合う", "時短"],
+    "servings": 2,
+    "ingredients": [
+      { "name": "豚肉", "category": "肉", "amount": "200g" },
+      { "name": "なす", "category": "野菜", "amount": "2本" },
+      { "name": "ピーマン", "category": "野菜", "amount": "1個" }
+    ],
+    "allergens": ["大豆"],
+    "steps": [
+      "豚バラ肉(200g)は一口大に切る",
+      "なす(2本)は乱切り、ピーマン(1個)は乱切りにする",
+      "オリーブオイルで豚肉を炒める",
+      "なす・ピーマンを加えて炒める",
+      "味噌・酒・砂糖・醤油を混ぜて加え、炒め合わせて完成"
+    ],
+    "imageUrl": "https://image.space.rakuten.co.jp/d/strg/ctrl/3/b9439a7c2fd591879279d91e61d4fb6b09388f27.92.2.3.2.jpg",
+    "sourceUrl": "https://recipe.rakuten.co.jp/recipe/1390015585/"
+  },
+  {
+    "id": "r058",
+    "name": "焼きなすの煮びたし",
+    "genre": "和食",
+    "tags": ["夏", "さっぱり", "副菜"],
+    "servings": 2,
+    "ingredients": [
+      { "name": "なす", "category": "野菜", "amount": "3本" }
+    ],
+    "allergens": [],
+    "steps": [
+      "なす(3本)は皮に切り込みを入れる",
+      "ごま油で皮目から焼き、とろっとするまで焼く",
+      "おろし生姜・めんつゆ・水を混ぜたつゆに漬ける",
+      "冷蔵庫で冷やし、小ねぎを散らして完成"
+    ],
+    "imageUrl": "https://image.space.rakuten.co.jp/d/strg/ctrl/3/1f7d28e4fbbeed2f559e0ee7f2a56392702f8c2f.30.2.3.2.jpg",
+    "sourceUrl": "https://recipe.rakuten.co.jp/recipe/1010011230/"
+  },
+  {
+    "id": "r059",
+    "name": "あさりの炊き込みごはん",
+    "genre": "和食",
+    "tags": ["春", "ご飯もの", "ごちそう"],
+    "servings": 2,
+    "ingredients": [
+      { "name": "あさり", "category": "魚", "amount": "150g" },
+      { "name": "人参", "category": "野菜", "amount": "0.3本" }
+    ],
+    "allergens": ["大豆"],
+    "steps": [
+      "米2合を研いでざるにあげる",
+      "あさり(150g・むき身)・人参(0.3本・細切り)・油揚げを用意する",
+      "炊飯釜に米・和風だしの素・薄口醤油・酒・みりん・塩を入れ2合の目盛りまで水を加える",
+      "具材をのせて通常通り炊飯する",
+      "三つ葉を散らして完成"
+    ],
+    "imageUrl": "https://image.space.rakuten.co.jp/d/strg/ctrl/3/e262d3d2efd622cf408f7be72a910e613ef465de.92.2.3.2.jpg",
+    "sourceUrl": "https://recipe.rakuten.co.jp/recipe/1390015101/"
+  },
+  {
+    "id": "r060",
+    "name": "やみつききゅうり",
+    "genre": "中華",
+    "tags": ["おつまみ", "時短", "副菜"],
+    "servings": 2,
+    "ingredients": [
+      { "name": "きゅうり", "category": "野菜", "amount": "2本" }
+    ],
+    "allergens": [],
+    "steps": [
+      "きゅうり(2本)はたたいて食べやすく割る",
+      "塩をふって軽くもみ、水気を絞る",
+      "砂糖・鶏がらスープの素・おろしにんにく・醤油・ごま油を混ぜる",
+      "きゅうりと和え、ごまとブラックペッパーをふって完成"
+    ],
+    "imageUrl": "https://image.space.rakuten.co.jp/d/strg/ctrl/3/d40cd7c04d245d921e34b2c3293c40bcf98767ca.56.2.3.2.jpg",
+    "sourceUrl": "https://recipe.rakuten.co.jp/recipe/1500028525/"
+  },
+  {
+    "id": "r061",
+    "name": "簡単タコライス",
+    "genre": "洋食",
+    "tags": ["行事・イベント", "子供に人気", "ご飯もの"],
+    "servings": 2,
+    "ingredients": [
+      { "name": "ひき肉", "category": "肉", "amount": "200g" },
+      { "name": "玉ねぎ", "category": "野菜", "amount": "0.5個" },
+      { "name": "トマト", "category": "野菜", "amount": "1個" },
+      { "name": "レタス", "category": "野菜", "amount": "0.3個" }
+    ],
+    "allergens": ["乳"],
+    "steps": [
+      "玉ねぎ(0.5個)はみじん切りにする",
+      "フライパンでひき肉(200g)と玉ねぎを炒める",
+      "カレー粉・ケチャップ・ウスターソース・塩こしょうで味付けする",
+      "レタス(0.3個)は千切り、トマト(1個)は角切りにする",
+      "ご飯にレタス・そぼろ・トマト・とろけるチーズをのせて完成"
+    ],
+    "imageUrl": "https://image.space.rakuten.co.jp/d/strg/ctrl/3/a2cd7c7e903b310943fba0b6c45bd7eed6c17da1.86.2.3.2.jpg",
+    "sourceUrl": "https://recipe.rakuten.co.jp/recipe/1890007828/"
   }
 ]
