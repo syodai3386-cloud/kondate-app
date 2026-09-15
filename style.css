@@ -300,6 +300,31 @@ button.link:hover {
   border-bottom: none;
 }
 
+.list-item-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 0 0 auto;
+}
+
+/* 購入フォームなど、行の下に展開コンテンツを持つ一覧項目用。
+   通常時は.list-itemと同じ見た目だが、展開時も区切り線が項目全体の下端に来る */
+.list-entry {
+  padding: 9px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.list-entry:last-child {
+  border-bottom: none;
+}
+
+.list-entry-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
 .item-main {
   display: flex;
   flex-direction: column;

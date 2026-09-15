@@ -13,7 +13,10 @@ const viewState = {
   weekOffset: 0,
   selectedDate: toISODate(new Date()),
   selectedCourse: "all",
+  resultOffset: 0,
 };
+
+const RESULT_PAGE_SIZE = 5;
 
 function toISODate(date) {
   const y = date.getFullYear();
@@ -99,6 +102,7 @@ function renderCalendarCard(store, rerender) {
   card.querySelectorAll(".calendar-day").forEach((btn) => {
     btn.addEventListener("click", () => {
       viewState.selectedDate = btn.dataset.date;
+      viewState.resultOffset = 0;
       rerender();
     });
   });
@@ -156,6 +160,7 @@ function cancelPlan(plan, { store, rerender }) {
   store.setMealPlans(store.getMealPlans().filter((p) => p.id !== plan.id));
 
   alert(`「${plan.recipeName}」の予定を取り消し、在庫・買い物リストを元に戻しました`);
+  viewState.resultOffset = 0;
   rerender();
 }
 
@@ -204,6 +209,7 @@ function renderCourseFilterCard(store, rerender) {
   card.querySelectorAll(".mode-btn").forEach((btn) => {
     btn.addEventListener("click", () => {
       viewState.selectedCourse = btn.dataset.course;
+      viewState.resultOffset = 0;
       rerender();
     });
   });
@@ -260,11 +266,12 @@ function renderRecipeCard({ recipe, reasons }, { store, rerender, dateStr }) {
 
   const actionsSlot = card.querySelector(".actions-slot");
 
-  function commitPlan(matched, leftoverMap) {
+  function commitPlan(matchedFood, matchedSeasoning, leftoverMap, usedUpSeasoningIds) {
     const currentIngredients = store.getIngredients();
 
-    // 更新前のスナップショットを保存しておく（取り消し時の復元に使う）
-    const matchedSnapshots = matched.map((item) => ({
+    // 更新前のスナップショットを保存しておく（取り消し時の復元に使う）。
+    // 調味料は「使い切る」にチェックしたものだけを記録する（未チェックは在庫に変化なし）。
+    const foodSnapshots = matchedFood.map((item) => ({
       id: item.id,
       name: item.name,
       category: item.category,
@@ -273,27 +280,51 @@ function renderRecipeCard({ recipe, reasons }, { store, rerender, dateStr }) {
       expiryDate: item.expiryDate,
       leftoverQuantity: leftoverMap.has(item.id) ? leftoverMap.get(item.id) : null,
     }));
+    const usedUpSeasonings = matchedSeasoning.filter((item) => usedUpSeasoningIds.has(item.id));
+    const seasoningSnapshots = usedUpSeasonings.map((item) => ({
+      id: item.id,
+      name: item.name,
+      category: item.category,
+      quantity: item.quantity,
+      unit: item.unit,
+      expiryDate: item.expiryDate,
+      leftoverQuantity: null,
+    }));
+    const matchedSnapshots = [...foodSnapshots, ...seasoningSnapshots];
 
-    const matchedIds = new Set(matched.map((m) => m.id));
+    const removedIds = new Set([
+      ...matchedFood.filter((i) => !leftoverMap.has(i.id)).map((i) => i.id),
+      ...usedUpSeasonings.map((i) => i.id),
+    ]);
     const updatedIngredients = currentIngredients
-      .filter((i) => !matchedIds.has(i.id) || leftoverMap.has(i.id))
+      .filter((i) => !removedIds.has(i.id))
       .map((i) => (leftoverMap.has(i.id) ? { ...i, quantity: leftoverMap.get(i.id) } : i));
     store.setIngredients(updatedIngredients);
 
-    const missingIngredients = recipe.ingredients.filter(
-      (ing) => !currentIngredients.some((i) => nameMatches(i.name, ing.name))
-    );
+    // 買い物リストへの自動追加：もともと在庫に無かった食材 ＋ 使い切る予定の調味料
+    const missingIngredientNames = recipe.ingredients
+      .filter((ing) => !currentIngredients.some((i) => nameMatches(i.name, ing.name)))
+      .map((ing) => ing.name);
+    const usedUpSeasoningNames = usedUpSeasonings.map((i) => i.name);
+    const shoppingCandidateNames = [...new Set([...missingIngredientNames, ...usedUpSeasoningNames])];
+
     const existingShoppingNames = new Set(store.getShoppingList().map((i) => i.name));
-    const shoppingAdditions = missingIngredients
-      .filter((ing) => !existingShoppingNames.has(ing.name))
-      .map((ing) => ({
-        id: store.uid(),
-        name: ing.name,
-        reason: `「${recipe.name}」（${formatDateLabel(dateStr)}に作る予定）に使用`,
-        checked: false,
-      }));
-    if (shoppingAdditions.length > 0) {
-      store.setShoppingList([...store.getShoppingList(), ...shoppingAdditions]);
+    const newShoppingNames = shoppingCandidateNames.filter((name) => !existingShoppingNames.has(name));
+
+    let shoppingAdditions = [];
+    if (newShoppingNames.length > 0) {
+      const wantsToAdd = confirm(
+        `次の食材・調味料が不足しています。買い物リストに追加しますか？\n\n・${newShoppingNames.join("\n・")}`
+      );
+      if (wantsToAdd) {
+        shoppingAdditions = newShoppingNames.map((name) => ({
+          id: store.uid(),
+          name,
+          reason: `「${recipe.name}」（${formatDateLabel(dateStr)}に作る予定）に使用`,
+          checked: false,
+        }));
+        store.setShoppingList([...store.getShoppingList(), ...shoppingAdditions]);
+      }
     }
 
     const mealPlans = store.getMealPlans();
@@ -312,9 +343,10 @@ function renderRecipeCard({ recipe, reasons }, { store, rerender, dateStr }) {
 
     let message = `「${recipe.name}」を${formatDateLabel(dateStr)}の献立として登録しました。`;
     if (shoppingAdditions.length > 0) {
-      message += `不足していた${shoppingAdditions.length}件の食材を買い物リストに追加しました。`;
+      message += `不足・使い切り予定の${shoppingAdditions.length}件を買い物リストに追加しました。`;
     }
     alert(message);
+    viewState.resultOffset = 0;
     rerender();
   }
 
@@ -329,11 +361,13 @@ function renderRecipeCard({ recipe, reasons }, { store, rerender, dateStr }) {
     actionsSlot.querySelector('[data-action="plan"]').addEventListener("click", () => {
       const currentIngredients = store.getIngredients();
       const matched = findMatchedInventoryItems(recipe.ingredients, currentIngredients);
-      if (matched.length === 0) {
-        commitPlan([], new Map());
+      const matchedFood = matched.filter((i) => i.category !== "調味料");
+      const matchedSeasoning = matched.filter((i) => i.category === "調味料");
+      if (matchedFood.length === 0 && matchedSeasoning.length === 0) {
+        commitPlan([], [], new Map(), new Set());
         return;
       }
-      renderLeftoverForm(matched);
+      renderLeftoverForm(matchedFood, matchedSeasoning);
     });
 
     actionsSlot.querySelector('[data-action="skip"]').addEventListener("click", () => {
@@ -341,24 +375,48 @@ function renderRecipeCard({ recipe, reasons }, { store, rerender, dateStr }) {
     });
   }
 
-  function renderLeftoverForm(matched) {
+  function renderLeftoverForm(matchedFood, matchedSeasoning) {
     actionsSlot.innerHTML = `
       <div class="leftover-form">
-        <p class="item-sub">
-          このレシピを作ると、以下の食材を使う予定です。作った後に残りそうな分量があれば入力してください（空欄＝使い切る予定）
-        </p>
-        ${matched
-          .map(
-            (item) => `
-          <div class="form-row leftover-row" data-id="${item.id}">
-            <span class="item-name" style="flex:1 1 140px;align-self:center;">${item.name}</span>
-            <div class="field-group">
-              <label class="field-label">残りそうな分量（現在庫: ${item.quantity}${item.unit}）</label>
-              <input type="number" min="0" step="0.1" class="leftover-qty" placeholder="空欄=使い切る予定" />
-            </div>
-          </div>`
-          )
-          .join("")}
+        ${
+          matchedFood.length > 0
+            ? `
+          <p class="item-sub">食材は、作った後に残りそうな分量があれば入力してください（空欄＝使い切る予定）</p>
+          ${matchedFood
+            .map(
+              (item) => `
+            <div class="form-row leftover-row" data-id="${item.id}">
+              <span class="item-name" style="flex:1 1 140px;align-self:center;">${item.name}</span>
+              <div class="field-group">
+                <label class="field-label">残りそうな分量（現在庫: ${item.quantity}${item.unit}）</label>
+                <input type="number" min="0" step="0.1" class="leftover-qty" placeholder="空欄=使い切る予定" />
+              </div>
+            </div>`
+            )
+            .join("")}
+        `
+            : ""
+        }
+        ${
+          matchedSeasoning.length > 0
+            ? `
+          <p class="item-sub" style="${matchedFood.length > 0 ? "margin-top:12px;" : ""}">
+            使い切りそうな調味料があればチェックしてください（買い物リストに追加します）
+          </p>
+          <div class="seasoning-check-list">
+            ${matchedSeasoning
+              .map(
+                (item) => `
+              <label class="seasoning-check-row" data-id="${item.id}">
+                <input type="checkbox" class="seasoning-usedup" />
+                <span>${item.name}</span>
+              </label>`
+              )
+              .join("")}
+          </div>
+        `
+            : ""
+        }
         <div class="recipe-actions">
           <button class="primary" data-action="confirm-plan">登録する</button>
           <button class="secondary" data-action="cancel-plan-form">キャンセル</button>
@@ -374,7 +432,13 @@ function renderRecipeCard({ recipe, reasons }, { store, rerender, dateStr }) {
           leftoverMap.set(row.dataset.id, Number(input.value));
         }
       });
-      commitPlan(matched, leftoverMap);
+      const usedUpSeasoningIds = new Set();
+      actionsSlot.querySelectorAll(".seasoning-check-row").forEach((row) => {
+        if (row.querySelector(".seasoning-usedup").checked) {
+          usedUpSeasoningIds.add(row.dataset.id);
+        }
+      });
+      commitPlan(matchedFood, matchedSeasoning, leftoverMap, usedUpSeasoningIds);
     });
 
     actionsSlot.querySelector('[data-action="cancel-plan-form"]').addEventListener("click", () => {
@@ -412,14 +476,22 @@ export function renderSuggestPage(container, { store, rerender }) {
     const requests = store.getRequests();
     const mealPlans = store.getMealPlans();
 
-    const results = suggestRecipes({
+    const allResults = suggestRecipes({
       recipes,
       ingredients,
       profile,
       requests,
       mealPlans,
       course: viewState.selectedCourse,
-    });
+    }, recipes.length);
+
+    if (viewState.resultOffset >= allResults.length) {
+      viewState.resultOffset = 0;
+    }
+    const pageResults = allResults.slice(
+      viewState.resultOffset,
+      viewState.resultOffset + RESULT_PAGE_SIZE
+    );
 
     wrap.innerHTML = "";
     const header = document.createElement("h2");
@@ -433,15 +505,31 @@ export function renderSuggestPage(container, { store, rerender }) {
       wrap.appendChild(hint);
     }
 
-    if (results.length === 0) {
+    if (allResults.length === 0) {
       const empty = document.createElement("p");
       empty.className = "empty-state";
       empty.textContent = "提案できるレシピがありません（コースの絞り込みやアレルギー・苦手食材で全て除外された可能性があります）";
       wrap.appendChild(empty);
     }
 
-    results.forEach((result) => {
+    pageResults.forEach((result) => {
       wrap.appendChild(renderRecipeCard(result, { store, rerender, dateStr: viewState.selectedDate }));
     });
+
+    if (allResults.length > RESULT_PAGE_SIZE) {
+      const moreBtn = document.createElement("button");
+      moreBtn.className = "secondary";
+      moreBtn.style.width = "100%";
+      moreBtn.style.marginTop = "4px";
+      moreBtn.textContent = "レシピを再検索する";
+      moreBtn.addEventListener("click", () => {
+        viewState.resultOffset += RESULT_PAGE_SIZE;
+        if (viewState.resultOffset >= allResults.length) {
+          viewState.resultOffset = 0;
+        }
+        rerender();
+      });
+      wrap.appendChild(moreBtn);
+    }
   })();
 }

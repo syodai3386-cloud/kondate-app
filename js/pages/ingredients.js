@@ -78,7 +78,7 @@ function seedTestData(store, rerender) {
     name,
     category: "調味料",
     quantity: 1,
-    unit: "個",
+    unit: "",
     expiryDate: null,
     registeredAt: now,
   }));
@@ -121,41 +121,68 @@ function renderFormCard(store, rerender) {
     <div class="form-row">
       <input type="text" id="ing-name" placeholder="${isSeasoning ? "例：醤油" : "例：豚肉"}" />
     </div>
-    <div class="form-row">
-      <div class="field-group field-narrow">
-        <label class="field-label" for="ing-qty">数量</label>
-        <input type="number" id="ing-qty" min="0" step="0.1" value="1" />
-      </div>
-      <div class="field-group field-narrow">
-        <label class="field-label" for="ing-unit">単位</label>
-        <select id="ing-unit">
-          ${UNITS.map((u) => `<option value="${u}">${u}</option>`).join("")}
-        </select>
-      </div>
-      ${
-        isSeasoning
-          ? ""
-          : `<div class="field-group">
+    ${
+      isSeasoning
+        ? ""
+        : `<div class="form-row">
+             <div class="field-group field-narrow">
+               <label class="field-label" for="ing-qty">数量</label>
+               <input type="number" id="ing-qty" min="0" step="0.1" value="1" />
+             </div>
+             <div class="field-group field-narrow">
+               <label class="field-label" for="ing-unit">単位</label>
+               <select id="ing-unit">
+                 ${UNITS.map((u) => `<option value="${u}">${u}</option>`).join("")}
+               </select>
+             </div>
+             <div class="field-group">
                <label class="field-label" for="ing-expiry">消費期限</label>
                <input type="date" id="ing-expiry" />
-             </div>`
-      }
-    </div>
+             </div>
+           </div>`
+    }
     <button class="primary" id="ing-add">登録する</button>
   `;
 
   card.querySelector("#ing-add").addEventListener("click", () => {
     const name = card.querySelector("#ing-name").value.trim();
-    const quantity = Number(card.querySelector("#ing-qty").value) || 1;
-    const unit = card.querySelector("#ing-unit").value;
-    const expiryInput = card.querySelector("#ing-expiry");
-    const expiryDate = expiryInput ? expiryInput.value : "";
-
-    if (!name || (!isSeasoning && !expiryDate)) {
-      alert(isSeasoning ? "調味料名を入力してください" : "食材名と消費期限を入力してください");
+    if (!name) {
+      alert(isSeasoning ? "調味料名を入力してください" : "食材名を入力してください");
       return;
     }
-    const next = [
+
+    if (isSeasoning) {
+      const alreadyHave = store
+        .getIngredients()
+        .some((i) => i.category === "調味料" && i.name === name);
+      if (alreadyHave) {
+        alert("すでに登録されています");
+        return;
+      }
+      store.setIngredients([
+        ...store.getIngredients(),
+        {
+          id: store.uid(),
+          name,
+          category: "調味料",
+          quantity: 1,
+          unit: "",
+          expiryDate: null,
+          registeredAt: new Date().toISOString(),
+        },
+      ]);
+      rerender();
+      return;
+    }
+
+    const quantity = Number(card.querySelector("#ing-qty").value) || 1;
+    const unit = card.querySelector("#ing-unit").value;
+    const expiryDate = card.querySelector("#ing-expiry").value;
+    if (!expiryDate) {
+      alert("消費期限を入力してください");
+      return;
+    }
+    store.setIngredients([
       ...store.getIngredients(),
       {
         id: store.uid(),
@@ -163,11 +190,10 @@ function renderFormCard(store, rerender) {
         category: inferCategory(name),
         quantity,
         unit,
-        expiryDate: isSeasoning ? null : expiryDate,
+        expiryDate,
         registeredAt: new Date().toISOString(),
       },
-    ];
-    store.setIngredients(next);
+    ]);
     rerender();
   });
 
@@ -205,9 +231,9 @@ function renderListCard(store, rerender) {
       row.innerHTML = `
         <div class="item-main">
           <span class="item-name">${ing.name}</span>
-          <span class="item-sub">${ing.category} ・ ${ing.quantity}${ing.unit}</span>
+          ${isSeasoning ? "" : `<span class="item-sub">${ing.category} ・ ${ing.quantity}${ing.unit}</span>`}
         </div>
-        <div style="display:flex;align-items:center;gap:8px;">
+        <div class="list-item-actions">
           ${badgeHtml}
           <button class="link" data-id="${ing.id}">削除</button>
         </div>

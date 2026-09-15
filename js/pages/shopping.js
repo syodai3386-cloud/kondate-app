@@ -39,26 +39,26 @@ function renderPurchaseForm(item, { store, rerender }) {
   const wrap = document.createElement("div");
   wrap.className = "leftover-form";
   wrap.innerHTML = `
-    <div class="form-row">
-      <div class="field-group field-narrow">
-        <label class="field-label">数量</label>
-        <input type="number" min="0" step="0.1" value="1" class="purchase-qty" />
-      </div>
-      <div class="field-group field-narrow">
-        <label class="field-label">単位</label>
-        <select class="purchase-unit">
-          ${UNITS.map((u) => `<option value="${u}">${u}</option>`).join("")}
-        </select>
-      </div>
-      ${
-        isSeasoning
-          ? ""
-          : `<div class="field-group">
+    ${
+      isSeasoning
+        ? `<p class="item-sub">調味料は数量管理をしません。在庫に「あり」として追加します</p>`
+        : `<div class="form-row">
+             <div class="field-group field-narrow">
+               <label class="field-label">数量</label>
+               <input type="number" min="0" step="0.1" value="1" class="purchase-qty" />
+             </div>
+             <div class="field-group field-narrow">
+               <label class="field-label">単位</label>
+               <select class="purchase-unit">
+                 ${UNITS.map((u) => `<option value="${u}">${u}</option>`).join("")}
+               </select>
+             </div>
+             <div class="field-group">
                <label class="field-label">消費期限</label>
                <input type="date" class="purchase-expiry" />
-             </div>`
-      }
-    </div>
+             </div>
+           </div>`
+    }
     <div class="recipe-actions">
       <button class="primary" data-action="confirm-purchase">在庫に追加</button>
       <button class="secondary" data-action="cancel-purchase">キャンセル</button>
@@ -66,15 +66,38 @@ function renderPurchaseForm(item, { store, rerender }) {
   `;
 
   wrap.querySelector('[data-action="confirm-purchase"]').addEventListener("click", () => {
+    if (isSeasoning) {
+      const alreadyHave = store
+        .getIngredients()
+        .some((i) => i.category === "調味料" && i.name === item.name);
+      if (!alreadyHave) {
+        store.setIngredients([
+          ...store.getIngredients(),
+          {
+            id: store.uid(),
+            name: item.name,
+            category: "調味料",
+            quantity: 1,
+            unit: "",
+            expiryDate: null,
+            registeredAt: new Date().toISOString(),
+          },
+        ]);
+      }
+      store.setShoppingList(store.getShoppingList().filter((i) => i.id !== item.id));
+      purchasingId = null;
+      rerender();
+      return;
+    }
+
     const quantity = Number(wrap.querySelector(".purchase-qty").value) || 1;
     const unit = wrap.querySelector(".purchase-unit").value;
-    const expiryInput = wrap.querySelector(".purchase-expiry");
-    const expiryDate = expiryInput ? expiryInput.value : "";
-    if (!isSeasoning && !expiryDate) {
+    const expiryDate = wrap.querySelector(".purchase-expiry").value;
+    if (!expiryDate) {
       alert("消費期限を入力してください");
       return;
     }
-    const nextIngredients = [
+    store.setIngredients([
       ...store.getIngredients(),
       {
         id: store.uid(),
@@ -82,11 +105,10 @@ function renderPurchaseForm(item, { store, rerender }) {
         category: inferCategory(item.name),
         quantity,
         unit,
-        expiryDate: isSeasoning ? null : expiryDate,
+        expiryDate,
         registeredAt: new Date().toISOString(),
       },
-    ];
-    store.setIngredients(nextIngredients);
+    ]);
     store.setShoppingList(store.getShoppingList().filter((i) => i.id !== item.id));
     purchasingId = null;
     rerender();
@@ -132,35 +154,33 @@ export function renderShoppingPage(container, { store, rerender }) {
   } else {
     listCard.innerHTML = `<h2>買い物リスト</h2>`;
     list.forEach((item) => {
-      const row = document.createElement("div");
-      row.className = "list-item";
-      row.style.flexDirection = "column";
-      row.style.alignItems = "stretch";
-      row.innerHTML = `
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;">
+      const entry = document.createElement("div");
+      entry.className = "list-entry";
+      entry.innerHTML = `
+        <div class="list-entry-row">
           <div class="item-main">
             <span class="item-name">${item.name}</span>
             ${item.reason ? `<span class="item-sub">${item.reason}</span>` : ""}
           </div>
-          <div style="display:flex;align-items:center;gap:8px;">
+          <div class="list-item-actions">
             <button class="secondary" data-buy="${item.id}">購入</button>
             <button class="link" data-del="${item.id}">削除</button>
           </div>
         </div>
       `;
       if (purchasingId === item.id) {
-        row.appendChild(renderPurchaseForm(item, { store, rerender }));
+        entry.appendChild(renderPurchaseForm(item, { store, rerender }));
       }
-      row.querySelector("[data-buy]").addEventListener("click", () => {
+      entry.querySelector("[data-buy]").addEventListener("click", () => {
         purchasingId = purchasingId === item.id ? null : item.id;
         rerender();
       });
-      row.querySelector("[data-del]").addEventListener("click", () => {
+      entry.querySelector("[data-del]").addEventListener("click", () => {
         const next = store.getShoppingList().filter((i) => i.id !== item.id);
         store.setShoppingList(next);
         rerender();
       });
-      listCard.appendChild(row);
+      listCard.appendChild(entry);
     });
   }
   wrap.appendChild(listCard);
