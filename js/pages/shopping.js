@@ -1,7 +1,7 @@
 import { fetchRecipes } from "../recipes.js";
 import { nameMatches, recipeMatchesRequest } from "../textMatch.js";
 import { inferCategory } from "../categoryInference.js";
-import { UNITS } from "./ingredients.js";
+import { UNITS, addOrMergeFoodIngredient } from "./ingredients.js";
 
 // どの項目が「購入」フォームを展開中かをモジュールスコープで保持する
 let purchasingId = null;
@@ -97,18 +97,13 @@ function renderPurchaseForm(item, { store, rerender }) {
       alert("消費期限を入力してください");
       return;
     }
-    store.setIngredients([
-      ...store.getIngredients(),
-      {
-        id: store.uid(),
-        name: item.name,
-        category: inferCategory(item.name),
-        quantity,
-        unit,
-        expiryDate,
-        registeredAt: new Date().toISOString(),
-      },
-    ]);
+    addOrMergeFoodIngredient(store, {
+      name: item.name,
+      category: inferCategory(item.name),
+      quantity,
+      unit,
+      expiryDate,
+    });
     store.setShoppingList(store.getShoppingList().filter((i) => i.id !== item.id));
     purchasingId = null;
     rerender();

@@ -325,6 +325,24 @@ button.link:hover {
   gap: 8px;
 }
 
+.ingredient-batch-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.ingredient-batch-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.ingredient-batch-qty {
+  flex: 1 1 auto;
+}
+
 .item-main {
   display: flex;
   flex-direction: column;

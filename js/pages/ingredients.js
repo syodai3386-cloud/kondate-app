@@ -55,6 +55,36 @@ const SAMPLE_SEASONINGS = [
   "和風だしの素", "にんにく", "しょうが", "こしょう", "ポン酢", "カレールウ",
 ];
 
+/**
+ * 食材を在庫に追加する。同名・同単位・同賞味期限の在庫が既にあれば数量を合算し、
+ * そうでなければ新しいロットとして追加する（賞味期限が違う複数ロットは
+ * 一覧表示側で1項目にまとめて内訳を表示する）。
+ */
+export function addOrMergeFoodIngredient(store, { name, category, quantity, unit, expiryDate }) {
+  const current = store.getIngredients();
+  const idx = current.findIndex(
+    (i) => i.category !== "調味料" && i.name === name && i.unit === unit && i.expiryDate === expiryDate
+  );
+  if (idx !== -1) {
+    const next = [...current];
+    next[idx] = { ...next[idx], quantity: next[idx].quantity + quantity };
+    store.setIngredients(next);
+  } else {
+    store.setIngredients([
+      ...current,
+      {
+        id: store.uid(),
+        name,
+        category,
+        quantity,
+        unit,
+        expiryDate,
+        registeredAt: new Date().toISOString(),
+      },
+    ]);
+  }
+}
+
 function addDays(n) {
   const d = new Date();
   d.setDate(d.getDate() + n);
@@ -182,72 +212,113 @@ function renderFormCard(store, rerender) {
       alert("消費期限を入力してください");
       return;
     }
-    store.setIngredients([
-      ...store.getIngredients(),
-      {
-        id: store.uid(),
-        name,
-        category: inferCategory(name),
-        quantity,
-        unit,
-        expiryDate,
-        registeredAt: new Date().toISOString(),
-      },
-    ]);
+    addOrMergeFoodIngredient(store, { name, category: inferCategory(name), quantity, unit, expiryDate });
     rerender();
   });
 
   return card;
 }
 
-function renderListCard(store, rerender) {
-  const isSeasoning = activeTab === "seasoning";
-  const ingredients = store.getIngredients().filter((i) =>
-    isSeasoning ? i.category === "調味料" : i.category !== "調味料"
-  );
+function renderSeasoningListCard(store, rerender) {
+  const seasonings = store
+    .getIngredients()
+    .filter((i) => i.category === "調味料")
+    .sort((a, b) => a.name.localeCompare(b.name, "ja"));
 
   const listCard = document.createElement("div");
   listCard.className = "card";
 
-  const sorted = isSeasoning
-    ? [...ingredients].sort((a, b) => a.name.localeCompare(b.name, "ja"))
-    : [...ingredients].sort((a, b) => new Date(a.expiryDate) - new Date(b.expiryDate));
-
-  const title = isSeasoning ? "在庫調味料" : "在庫食材（期限が近い順）";
-
-  if (sorted.length === 0) {
-    listCard.innerHTML = `<h2>${isSeasoning ? "在庫調味料" : "在庫食材"}</h2><p class="empty-state">まだ${isSeasoning ? "調味料が" : "食材が"}登録されていません</p>`;
-  } else {
-    listCard.innerHTML = `<h2>${title}</h2>`;
-    sorted.forEach((ing) => {
-      const row = document.createElement("div");
-      row.className = "list-item";
-      const badgeHtml = (() => {
-        if (isSeasoning || !ing.expiryDate) return "";
-        const daysLeft = daysUntil(ing.expiryDate);
-        const badge = expiryBadge(daysLeft);
-        return `<span class="badge ${badge.cls}">${badge.label}</span>`;
-      })();
-      row.innerHTML = `
-        <div class="item-main">
-          <span class="item-name">${ing.name}</span>
-          ${isSeasoning ? "" : `<span class="item-sub">${ing.category} ・ ${ing.quantity}${ing.unit}</span>`}
-        </div>
-        <div class="list-item-actions">
-          ${badgeHtml}
-          <button class="link" data-id="${ing.id}">削除</button>
-        </div>
-      `;
-      row.querySelector("button.link").addEventListener("click", () => {
-        const next = store.getIngredients().filter((i) => i.id !== ing.id);
-        store.setIngredients(next);
-        rerender();
-      });
-      listCard.appendChild(row);
-    });
+  if (seasonings.length === 0) {
+    listCard.innerHTML = `<h2>在庫調味料</h2><p class="empty-state">まだ調味料が登録されていません</p>`;
+    return listCard;
   }
 
+  listCard.innerHTML = `<h2>在庫調味料</h2>`;
+  seasonings.forEach((ing) => {
+    const row = document.createElement("div");
+    row.className = "list-item";
+    row.innerHTML = `
+      <div class="item-main">
+        <span class="item-name">${ing.name}</span>
+      </div>
+      <div class="list-item-actions">
+        <button class="link" data-id="${ing.id}">削除</button>
+      </div>
+    `;
+    row.querySelector("button.link").addEventListener("click", () => {
+      store.setIngredients(store.getIngredients().filter((i) => i.id !== ing.id));
+      rerender();
+    });
+    listCard.appendChild(row);
+  });
+
   return listCard;
+}
+
+function renderFoodListCard(store, rerender) {
+  const foods = store.getIngredients().filter((i) => i.category !== "調味料");
+
+  const listCard = document.createElement("div");
+  listCard.className = "card";
+
+  if (foods.length === 0) {
+    listCard.innerHTML = `<h2>在庫食材</h2><p class="empty-state">まだ食材が登録されていません</p>`;
+    return listCard;
+  }
+
+  // 同じ名前の食材は、賞味期限違いのロットが複数あっても1項目にまとめて表示する
+  const groups = new Map();
+  foods.forEach((ing) => {
+    if (!groups.has(ing.name)) groups.set(ing.name, []);
+    groups.get(ing.name).push(ing);
+  });
+  const groupList = Array.from(groups.values()).map((batches) => {
+    const sortedBatches = [...batches].sort((a, b) => new Date(a.expiryDate) - new Date(b.expiryDate));
+    return { name: sortedBatches[0].name, category: sortedBatches[0].category, batches: sortedBatches };
+  });
+  groupList.sort((a, b) => new Date(a.batches[0].expiryDate) - new Date(b.batches[0].expiryDate));
+
+  listCard.innerHTML = `<h2>在庫食材（期限が近い順）</h2>`;
+  groupList.forEach((group) => {
+    const entry = document.createElement("div");
+    entry.className = "list-entry";
+    entry.innerHTML = `
+      <div class="item-main" style="margin-bottom:4px;">
+        <span class="item-name">${group.name}</span>
+        <span class="item-sub">${group.category}</span>
+      </div>
+      <div class="ingredient-batch-list">
+        ${group.batches
+          .map((b) => {
+            const daysLeft = daysUntil(b.expiryDate);
+            const badge = expiryBadge(daysLeft);
+            return `
+              <div class="ingredient-batch-row">
+                <span class="ingredient-batch-qty">${b.quantity}${b.unit}</span>
+                <span class="badge ${badge.cls}">${badge.label}</span>
+                <button class="link" data-id="${b.id}">削除</button>
+              </div>
+            `;
+          })
+          .join("")}
+      </div>
+    `;
+    entry.querySelectorAll(".ingredient-batch-row button.link").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        store.setIngredients(store.getIngredients().filter((i) => i.id !== btn.dataset.id));
+        rerender();
+      });
+    });
+    listCard.appendChild(entry);
+  });
+
+  return listCard;
+}
+
+function renderListCard(store, rerender) {
+  return activeTab === "seasoning"
+    ? renderSeasoningListCard(store, rerender)
+    : renderFoodListCard(store, rerender);
 }
 
 export function renderIngredientsPage(container, { store, rerender }) {
