@@ -2,18 +2,16 @@ const KEYS = {
   ingredients: "kondate.ingredients",
   profile: "kondate.profile",
   requests: "kondate.requests",
-  history: "kondate.history",
+  mealPlans: "kondate.mealPlans",
   shoppingList: "kondate.shoppingList",
-  settings: "kondate.settings",
 };
 
 const DEFAULTS = {
   ingredients: [],
   profile: { members: [], allergies: [], dislikes: [], likes: [] },
   requests: [],
-  history: [],
+  mealPlans: [],
   shoppingList: [],
-  settings: { planMode: "day", weeklyCookDays: 5 },
 };
 
 function load(key) {
@@ -44,14 +42,11 @@ export const store = {
   getRequests: () => load("requests"),
   setRequests: (v) => save("requests", v),
 
-  getHistory: () => load("history"),
-  setHistory: (v) => save("history", v),
+  getMealPlans: () => load("mealPlans"),
+  setMealPlans: (v) => save("mealPlans", v),
 
   getShoppingList: () => load("shoppingList"),
   setShoppingList: (v) => save("shoppingList", v),
-
-  getSettings: () => load("settings"),
-  setSettings: (v) => save("settings", v),
 
   uid,
 };

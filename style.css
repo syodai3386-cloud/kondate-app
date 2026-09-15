@@ -453,3 +453,75 @@ details summary {
 .leftover-row .item-name {
   color: var(--text);
 }
+
+.calendar-nav {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.calendar-strip {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+}
+
+.calendar-day {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 8px 4px;
+  border: 1.5px solid var(--border);
+  background: #fffefc;
+  border-radius: 12px;
+  cursor: pointer;
+  min-width: 0;
+  transition: border-color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+}
+
+.calendar-day:hover {
+  border-color: var(--primary-light);
+}
+
+.calendar-day.today .calendar-daynum {
+  color: var(--primary-dark);
+}
+
+.calendar-day.active {
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  border-color: var(--primary);
+  box-shadow: var(--shadow);
+}
+
+.calendar-day.active .calendar-weekday,
+.calendar-day.active .calendar-daynum,
+.calendar-day.active .calendar-plan-name {
+  color: white;
+}
+
+.calendar-weekday {
+  font-size: 0.7rem;
+  color: var(--muted);
+}
+
+.calendar-daynum {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.calendar-plan-name {
+  font-size: 0.62rem;
+  color: var(--primary-dark);
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+}
+
+.calendar-day.has-plan {
+  border-color: var(--primary-light);
+}

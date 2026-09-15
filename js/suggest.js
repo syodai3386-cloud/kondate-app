@@ -1,6 +1,6 @@
 import { nameMatches, recipeMatchesRequest } from "./textMatch.js";
 
-const RECENT_HISTORY_WINDOW = 5;
+const RECENT_PLAN_WINDOW = 5;
 
 function daysUntil(dateStr) {
   const today = new Date();
@@ -23,7 +23,7 @@ function urgencyWeight(daysLeft) {
 /**
  * 1レシピをスコアリングする。アレルギー・苦手食材に該当する場合はnullを返す。
  */
-function scoreRecipe(recipe, { ingredients, profile, requests, recentGenres, weekGenreCounts }) {
+function scoreRecipe(recipe, { ingredients, profile, requests, recentGenres }) {
   const hasAllergen = recipe.allergens.some((a) => profile.allergies.includes(a));
   if (hasAllergen) return null;
 
@@ -62,8 +62,7 @@ function scoreRecipe(recipe, { ingredients, profile, requests, recentGenres, wee
   }
 
   const recentSameGenreCount = recentGenres.filter((g) => g === recipe.genre).length;
-  const weekSameGenreCount = weekGenreCounts ? weekGenreCounts[recipe.genre] || 0 : 0;
-  const varietyPenalty = recentSameGenreCount * 3 + weekSameGenreCount * 6;
+  const varietyPenalty = recentSameGenreCount * 3;
 
   const total = ingredientScore + likesBonus + requestBonus - varietyPenalty;
 
@@ -79,7 +78,7 @@ function scoreRecipe(recipe, { ingredients, profile, requests, recentGenres, wee
     });
   if (matchedRequest) reasons.push(`「${matchedRequest.text}」のリクエストに合致`);
   if (likesBonus) reasons.push(`好みの傾向に合致`);
-  if (recentSameGenreCount === 0 && weekSameGenreCount === 0) {
+  if (recentSameGenreCount === 0) {
     reasons.push(`最近作っていないジャンルで変化がつく`);
   }
 
@@ -87,61 +86,20 @@ function scoreRecipe(recipe, { ingredients, profile, requests, recentGenres, wee
 }
 
 /**
- * 「今日の提案」：在庫・好み・リクエスト・履歴から上位N件を返す。
+ * 指定した日のレシピ提案：在庫・好み・リクエスト・献立予定履歴から上位N件を返す。
+ * course が指定されていれば（"all" 以外）そのコース種別のレシピに絞り込む。
  */
-export function suggestRecipes({ recipes, ingredients, profile, requests, history }, limit = 5) {
-  const recentGenres = history
-    .filter((h) => h.cooked)
-    .slice(-RECENT_HISTORY_WINDOW)
-    .map((h) => h.genre);
+export function suggestRecipes({ recipes, ingredients, profile, requests, mealPlans, course }, limit = 5) {
+  const recentGenres = (mealPlans || [])
+    .slice(-RECENT_PLAN_WINDOW)
+    .map((p) => p.genre);
 
-  const scored = recipes
+  const candidates =
+    course && course !== "all" ? recipes.filter((r) => r.course === course) : recipes;
+
+  const scored = candidates
     .map((recipe) => scoreRecipe(recipe, { ingredients, profile, requests, recentGenres }))
     .filter(Boolean);
 
   return scored.sort((a, b) => b.score - a.score).slice(0, limit);
-}
-
-/**
- * 「1週間の献立プラン」：days件を1件ずつ選び、選ぶたびに使った食材を
- * 作業用コピーから取り除き、同じジャンルの連続を避けながらバラエティを確保する。
- */
-export function suggestWeeklyPlan({ recipes, ingredients, profile, requests, history }, days) {
-  const recentGenres = history
-    .filter((h) => h.cooked)
-    .slice(-RECENT_HISTORY_WINDOW)
-    .map((h) => h.genre);
-
-  let workingIngredients = ingredients.map((i) => ({ ...i }));
-  const usedRecipeIds = new Set();
-  const weekGenreCounts = {};
-  const plan = [];
-
-  for (let day = 0; day < days; day++) {
-    const candidates = recipes
-      .filter((r) => !usedRecipeIds.has(r.id))
-      .map((recipe) =>
-        scoreRecipe(recipe, {
-          ingredients: workingIngredients,
-          profile,
-          requests,
-          recentGenres,
-          weekGenreCounts,
-        })
-      )
-      .filter(Boolean)
-      .sort((a, b) => b.score - a.score);
-
-    const picked = candidates[0];
-    if (!picked) break;
-
-    plan.push(picked);
-    usedRecipeIds.add(picked.recipe.id);
-    weekGenreCounts[picked.recipe.genre] = (weekGenreCounts[picked.recipe.genre] || 0) + 1;
-
-    const consumedNames = new Set(picked.usedIngredients.map((u) => u.name));
-    workingIngredients = workingIngredients.filter((i) => !consumedNames.has(i.name));
-  }
-
-  return plan;
 }
