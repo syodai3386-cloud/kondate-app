@@ -24,6 +24,68 @@ function expiryBadge(daysLeft) {
   return { cls: "ok", label: `あと${daysLeft}日` };
 }
 
+// 動作確認用のサンプルデータ（食材・調味料）。「テストデータを読み込む」から使う。
+const SAMPLE_FOODS = [
+  { name: "豚肉", category: "肉", quantity: 300, unit: "g", days: 1 },
+  { name: "鶏肉", category: "肉", quantity: 400, unit: "g", days: 5 },
+  { name: "牛肉", category: "肉", quantity: 200, unit: "g", days: 3 },
+  { name: "ひき肉", category: "肉", quantity: 250, unit: "g", days: 2 },
+  { name: "鮭", category: "魚", quantity: 2, unit: "枚", days: 2 },
+  { name: "えび", category: "魚", quantity: 150, unit: "g", days: 4 },
+  { name: "卵", category: "卵・乳", quantity: 10, unit: "個", days: 10 },
+  { name: "牛乳", category: "卵・乳", quantity: 1, unit: "L", days: 4 },
+  { name: "豆腐", category: "豆腐・大豆製品", quantity: 1, unit: "丁", days: 3 },
+  { name: "厚揚げ", category: "豆腐・大豆製品", quantity: 2, unit: "枚", days: 6 },
+  { name: "白菜", category: "野菜", quantity: 0.5, unit: "個", days: 6 },
+  { name: "キャベツ", category: "野菜", quantity: 1, unit: "個", days: 7 },
+  { name: "玉ねぎ", category: "野菜", quantity: 3, unit: "個", days: 14 },
+  { name: "人参", category: "野菜", quantity: 2, unit: "本", days: 10 },
+  { name: "じゃがいも", category: "野菜", quantity: 4, unit: "個", days: 14 },
+  { name: "ピーマン", category: "野菜", quantity: 3, unit: "個", days: 5 },
+  { name: "もやし", category: "野菜", quantity: 1, unit: "袋", days: 2 },
+  { name: "しめじ", category: "野菜", quantity: 1, unit: "パック", days: 4 },
+  { name: "大根", category: "野菜", quantity: 1, unit: "本", days: 9 },
+  { name: "なす", category: "野菜", quantity: 3, unit: "本", days: 5 },
+  { name: "米", category: "主食", quantity: 5, unit: "kg", days: 60 },
+];
+
+const SAMPLE_SEASONINGS = [
+  "醤油", "みりん", "酒", "砂糖", "塩", "酢", "サラダ油", "ごま油", "味噌",
+  "マヨネーズ", "ケチャップ", "片栗粉", "小麦粉", "鶏がらスープの素",
+  "和風だしの素", "にんにく", "しょうが", "こしょう", "ポン酢", "カレールウ",
+];
+
+function addDays(n) {
+  const d = new Date();
+  d.setDate(d.getDate() + n);
+  return d.toISOString().slice(0, 10);
+}
+
+function seedTestData(store, rerender) {
+  if (!confirm("現在の食材・調味料の在庫をテスト用データに置き換えます。よろしいですか？")) return;
+  const now = new Date().toISOString();
+  const foodItems = SAMPLE_FOODS.map((f) => ({
+    id: store.uid(),
+    name: f.name,
+    category: f.category,
+    quantity: f.quantity,
+    unit: f.unit,
+    expiryDate: addDays(f.days),
+    registeredAt: now,
+  }));
+  const seasoningItems = SAMPLE_SEASONINGS.map((name) => ({
+    id: store.uid(),
+    name,
+    category: "調味料",
+    quantity: 1,
+    unit: "個",
+    expiryDate: null,
+    registeredAt: now,
+  }));
+  store.setIngredients([...foodItems, ...seasoningItems]);
+  rerender();
+}
+
 function renderTabsCard(store, rerender) {
   const card = document.createElement("div");
   card.className = "card";
@@ -33,12 +95,18 @@ function renderTabsCard(store, rerender) {
         (t) => `<button class="mode-btn ${activeTab === t.id ? "active" : ""}" data-tab="${t.id}">${t.label}</button>`
       ).join("")}
     </div>
+    <p class="item-sub" style="margin-top:8px;">
+      <button class="link" id="seed-test-data" style="color:var(--muted);text-decoration:underline;">テストデータを読み込む</button>
+    </p>
   `;
   card.querySelectorAll(".mode-btn").forEach((btn) => {
     btn.addEventListener("click", () => {
       activeTab = btn.dataset.tab;
       rerender();
     });
+  });
+  card.querySelector("#seed-test-data").addEventListener("click", () => {
+    seedTestData(store, rerender);
   });
   return card;
 }
