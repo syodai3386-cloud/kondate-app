@@ -3,9 +3,10 @@ import { suggestRecipes, suggestWeeklyPlan } from "../suggest.js";
 import { computeTargetServings, scaleAmount } from "../quantity.js";
 import { nameMatches } from "../textMatch.js";
 
-function findConsumedIngredientIds(usedIngredients, ingredients) {
-  const names = new Set(usedIngredients.map((u) => u.name));
-  return ingredients.filter((i) => names.has(i.name)).map((i) => i.id);
+function findMatchedInventoryItems(recipeIngredients, currentIngredients) {
+  return currentIngredients.filter((item) =>
+    recipeIngredients.some((ing) => nameMatches(item.name, ing.name))
+  );
 }
 
 function renderModeCard(store, rerender) {
@@ -47,7 +48,7 @@ function renderModeCard(store, rerender) {
   return card;
 }
 
-function renderRecipeCard({ recipe, reasons, usedIngredients }, { store, rerender, label }) {
+function renderRecipeCard({ recipe, reasons }, { store, rerender, label }) {
   const profile = store.getProfile();
   const targetServings = computeTargetServings(profile);
   const factor = targetServings ? targetServings / recipe.servings : 1;
@@ -91,18 +92,19 @@ function renderRecipeCard({ recipe, reasons, usedIngredients }, { store, rerende
         ? `<p class="item-sub"><a href="${recipe.sourceUrl}" target="_blank" rel="noopener">楽天レシピで元のレシピを見る（写真・投稿者コメントなど）</a></p>`
         : ""
     }
-    <div class="recipe-actions">
-      <button class="primary" data-action="cooked">作った</button>
-      <button class="secondary" data-action="shopping">不足食材を買い物リストに追加</button>
-      <button class="secondary" data-action="skip">今回は作らない</button>
-    </div>
+    <div class="actions-slot"></div>
   `;
 
-  card.querySelector('[data-action="cooked"]').addEventListener("click", () => {
+  const actionsSlot = card.querySelector(".actions-slot");
+
+  function commitCooked(matched, leftoverMap) {
     const currentIngredients = store.getIngredients();
-    const consumedIds = findConsumedIngredientIds(usedIngredients, currentIngredients);
-    const remaining = currentIngredients.filter((i) => !consumedIds.includes(i.id));
-    store.setIngredients(remaining);
+    const matchedIds = new Set(matched.map((m) => m.id));
+    const consumedIds = matched.filter((m) => !leftoverMap.has(m.id)).map((m) => m.id);
+    const updated = currentIngredients
+      .filter((i) => !matchedIds.has(i.id) || leftoverMap.has(i.id))
+      .map((i) => (leftoverMap.has(i.id) ? { ...i, quantity: leftoverMap.get(i.id) } : i));
+    store.setIngredients(updated);
 
     const history = store.getHistory();
     history.push({
@@ -116,39 +118,100 @@ function renderRecipeCard({ recipe, reasons, usedIngredients }, { store, rerende
     });
     store.setHistory(history);
 
-    alert(`「${recipe.name}」を記録しました。使った食材は在庫から削除されます。`);
+    alert(`「${recipe.name}」を記録しました。`);
     rerender();
-  });
+  }
 
-  card.querySelector('[data-action="shopping"]').addEventListener("click", () => {
-    const currentIngredients = store.getIngredients();
-    const missingIngredients = recipe.ingredients.filter(
-      (ing) => !currentIngredients.some((i) => nameMatches(i.name, ing.name))
-    );
-    if (missingIngredients.length === 0) {
-      alert("必要な食材はすべて在庫にあります");
-      return;
-    }
-    const existingNames = new Set(store.getShoppingList().map((i) => i.name));
-    const additions = missingIngredients
-      .filter((ing) => !existingNames.has(ing.name))
-      .map((ing) => ({
-        id: store.uid(),
-        name: ing.name,
-        reason: `「${recipe.name}」に使用`,
-        checked: false,
-      }));
-    if (additions.length === 0) {
-      alert("不足食材はすでに買い物リストにあります");
-      return;
-    }
-    store.setShoppingList([...store.getShoppingList(), ...additions]);
-    alert(`${additions.length}件を買い物リストに追加しました`);
-  });
+  function renderDefaultActions() {
+    actionsSlot.innerHTML = `
+      <div class="recipe-actions">
+        <button class="primary" data-action="cooked">作った</button>
+        <button class="secondary" data-action="shopping">不足食材を買い物リストに追加</button>
+        <button class="secondary" data-action="skip">今回は作らない</button>
+      </div>
+    `;
 
-  card.querySelector('[data-action="skip"]').addEventListener("click", () => {
-    card.remove();
-  });
+    actionsSlot.querySelector('[data-action="cooked"]').addEventListener("click", () => {
+      const currentIngredients = store.getIngredients();
+      const matched = findMatchedInventoryItems(recipe.ingredients, currentIngredients);
+      if (matched.length === 0) {
+        commitCooked([], new Map());
+        return;
+      }
+      renderLeftoverForm(matched);
+    });
+
+    actionsSlot.querySelector('[data-action="shopping"]').addEventListener("click", () => {
+      const currentIngredients = store.getIngredients();
+      const missingIngredients = recipe.ingredients.filter(
+        (ing) => !currentIngredients.some((i) => nameMatches(i.name, ing.name))
+      );
+      if (missingIngredients.length === 0) {
+        alert("必要な食材はすべて在庫にあります");
+        return;
+      }
+      const existingNames = new Set(store.getShoppingList().map((i) => i.name));
+      const additions = missingIngredients
+        .filter((ing) => !existingNames.has(ing.name))
+        .map((ing) => ({
+          id: store.uid(),
+          name: ing.name,
+          reason: `「${recipe.name}」に使用`,
+          checked: false,
+        }));
+      if (additions.length === 0) {
+        alert("不足食材はすでに買い物リストにあります");
+        return;
+      }
+      store.setShoppingList([...store.getShoppingList(), ...additions]);
+      alert(`${additions.length}件を買い物リストに追加しました`);
+    });
+
+    actionsSlot.querySelector('[data-action="skip"]').addEventListener("click", () => {
+      card.remove();
+    });
+  }
+
+  function renderLeftoverForm(matched) {
+    actionsSlot.innerHTML = `
+      <div class="leftover-form">
+        <p class="item-sub">使い切った食材はそのまま、残った食材だけ分量を入力してください（空欄＝使い切り）</p>
+        ${matched
+          .map(
+            (item) => `
+          <div class="form-row leftover-row" data-id="${item.id}">
+            <span class="item-name" style="flex:1 1 140px;align-self:center;">${item.name}</span>
+            <div class="field-group">
+              <label class="field-label">残った分量（現在庫: ${item.quantity}${item.unit}）</label>
+              <input type="number" min="0" step="0.1" class="leftover-qty" placeholder="空欄=使い切り" />
+            </div>
+          </div>`
+          )
+          .join("")}
+        <div class="recipe-actions">
+          <button class="primary" data-action="confirm-cooked">記録する</button>
+          <button class="secondary" data-action="cancel-cooked">キャンセル</button>
+        </div>
+      </div>
+    `;
+
+    actionsSlot.querySelector('[data-action="confirm-cooked"]').addEventListener("click", () => {
+      const leftoverMap = new Map();
+      actionsSlot.querySelectorAll(".leftover-row").forEach((row) => {
+        const input = row.querySelector(".leftover-qty");
+        if (input.value !== "" && Number(input.value) > 0) {
+          leftoverMap.set(row.dataset.id, Number(input.value));
+        }
+      });
+      commitCooked(matched, leftoverMap);
+    });
+
+    actionsSlot.querySelector('[data-action="cancel-cooked"]').addEventListener("click", () => {
+      renderDefaultActions();
+    });
+  }
+
+  renderDefaultActions();
 
   return card;
 }
