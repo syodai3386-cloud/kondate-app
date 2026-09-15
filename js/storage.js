@@ -80,4 +80,18 @@ export const store = {
   setShoppingList: (v) => save("shoppingList", v),
 
   uid,
+
+  // 端末・ブラウザの切り替え時に手動でバックアップ/復元するための機能
+  exportAll: () => {
+    const data = {};
+    Object.keys(KEYS).forEach((name) => {
+      data[name] = load(name);
+    });
+    return data;
+  },
+  importAll: (data) => {
+    Object.keys(KEYS).forEach((name) => {
+      if (data[name] !== undefined) save(name, data[name]);
+    });
+  },
 };

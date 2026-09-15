@@ -137,4 +137,56 @@ export function renderProfilePage(container, { store, rerender }) {
     },
     rerenderAll: rerender,
   });
+
+  const backupCard = document.createElement("div");
+  backupCard.className = "card";
+  backupCard.innerHTML = `
+    <h2>データのバックアップ</h2>
+    <p class="item-sub">
+      機種変更やブラウザ・プライベートモードの切り替え時は、ここで登録内容をファイルに書き出し、
+      別のブラウザで読み込むことでデータを引き継げます
+    </p>
+    <div class="recipe-actions">
+      <button class="secondary" id="export-data">エクスポート</button>
+      <button class="secondary" id="import-data">インポート</button>
+    </div>
+    <input type="file" id="import-file" accept="application/json" hidden />
+  `;
+  wrap.appendChild(backupCard);
+
+  backupCard.querySelector("#export-data").addEventListener("click", () => {
+    const data = store.exportAll();
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    const today = new Date().toISOString().slice(0, 10);
+    a.href = url;
+    a.download = `kondate-backup-${today}.json`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  });
+
+  const importFileInput = backupCard.querySelector("#import-file");
+  backupCard.querySelector("#import-data").addEventListener("click", () => {
+    importFileInput.click();
+  });
+  importFileInput.addEventListener("change", async () => {
+    const file = importFileInput.files[0];
+    if (!file) return;
+    try {
+      const text = await file.text();
+      const data = JSON.parse(text);
+      if (!confirm("現在のこの端末のデータを、選択したファイルの内容で上書きします。よろしいですか？")) {
+        importFileInput.value = "";
+        return;
+      }
+      store.importAll(data);
+      alert("読み込みました");
+      location.reload();
+    } catch (e) {
+      alert("ファイルの読み込みに失敗しました。正しいバックアップファイルか確認してください");
+    }
+  });
 }
