@@ -2728,5 +2728,19 @@
     "allergens": ["えび", "卵"],
     "steps": ["えび(150g)は下茹でする", "アボカド(1個)は角切りにする", "マヨネーズ・塩こしょう・レモン汁を混ぜる", "えびとアボカドを和えて完成"],
     "imageUrl": "https://image.space.rakuten.co.jp/d/strg/ctrl/3/91fa67c72366c36a3402505cac1c177188d5c3e8.41.2.3.2.jpg", "sourceUrl": "https://recipe.rakuten.co.jp/recipe/1980022946/"
+  },
+  {
+    "id": "r268", "name": "しいたけのチーズ焼き", "genre": "洋食", "tags": ["きのこ", "おつまみ", "時短"], "servings": 2,
+    "ingredients": [{ "name": "きのこ", "category": "野菜", "amount": "8個" }],
+    "allergens": ["乳"],
+    "steps": ["しいたけ(8個)は軸を取る", "かさにとろけるチーズをのせる", "オーブントースターでチーズが溶けるまで焼く", "醤油とパセリをかけて完成"],
+    "imageUrl": "https://image.space.rakuten.co.jp/d/strg/ctrl/3/c8ee6934fcc3c39955676b103675a2dd42e0e3d6.32.2.3.2.jpg", "sourceUrl": "https://recipe.rakuten.co.jp/recipe/1490006110/"
+  },
+  {
+    "id": "r269", "name": "鯖缶とねぎの簡単おつまみ", "genre": "和食", "tags": ["さば", "おつまみ", "時短"], "servings": 2,
+    "ingredients": [{ "name": "さば", "category": "魚", "amount": "1缶" }, { "name": "ネギ", "category": "野菜", "amount": "0.5本" }],
+    "allergens": [],
+    "steps": ["さば缶(1缶)は汁気を軽くきる", "ネギ(0.5本)は小口切りにする", "耐熱皿に盛りおろしにんにくをのせる", "ねぎ・塩・粗挽き黒こしょうをふって完成"],
+    "imageUrl": "https://image.space.rakuten.co.jp/d/strg/ctrl/3/3b9e18b0fb3f68b12f8832cf3cef45b742dfa9dc.19.9.3.3.jpg", "sourceUrl": "https://recipe.rakuten.co.jp/recipe/1270024090/"
   }
 ]
