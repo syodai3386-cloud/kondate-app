@@ -85,7 +85,7 @@ export function renderProfilePage(container, { store, rerender }) {
         ${APPETITES.map((a) => `<option value="${a}">${a}</option>`).join("")}
       </select>
     </div>
-    <button class="secondary" id="member-add">追加</button>
+    <button class="secondary" id="member-add" style="align-self:flex-end;">追加</button>
   `;
   membersCard.appendChild(addMemberRow);
   wrap.appendChild(membersCard);

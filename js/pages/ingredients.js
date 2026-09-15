@@ -322,6 +322,9 @@ function renderListCard(store, rerender) {
 }
 
 export function renderIngredientsPage(container, { store, rerender }) {
+  // 過去のデータに重複ロットが残っていた場合、表示前に一度整理しておく
+  store.setIngredients(store.getIngredients());
+
   container.appendChild(renderTabsCard(store, rerender));
   container.appendChild(renderFormCard(store, rerender));
   container.appendChild(renderListCard(store, rerender));
