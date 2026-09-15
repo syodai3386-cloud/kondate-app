@@ -3,6 +3,7 @@ import { nameMatches, recipeMatchesRequest } from "./textMatch.js";
 const RECENT_PLAN_WINDOW = 5;
 
 function daysUntil(dateStr) {
+  if (!dateStr) return null;
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   const target = new Date(dateStr);
@@ -16,7 +17,7 @@ function findInventoryMatch(recipeIngredient, ingredients) {
 }
 
 function urgencyWeight(daysLeft) {
-  if (daysLeft < 0) return 0;
+  if (daysLeft === null || daysLeft < 0) return 0;
   return Math.max(0, 10 - daysLeft);
 }
 

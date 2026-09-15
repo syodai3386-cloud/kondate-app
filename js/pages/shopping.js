@@ -1,5 +1,10 @@
 import { fetchRecipes } from "../recipes.js";
 import { nameMatches, recipeMatchesRequest } from "../textMatch.js";
+import { inferCategory } from "../categoryInference.js";
+import { UNITS } from "./ingredients.js";
+
+// どの項目が「購入」フォームを展開中かをモジュールスコープで保持する
+let purchasingId = null;
 
 async function findMissingForRequests(requests, ingredients) {
   if (requests.length === 0) return { missing: [], unmatchedRequests: [] };
@@ -27,6 +32,72 @@ async function findMissingForRequests(requests, ingredients) {
     missing: Array.from(missing, ([name, reason]) => ({ name, reason })),
     unmatchedRequests,
   };
+}
+
+function renderPurchaseForm(item, { store, rerender }) {
+  const isSeasoning = inferCategory(item.name) === "調味料";
+  const wrap = document.createElement("div");
+  wrap.className = "leftover-form";
+  wrap.innerHTML = `
+    <div class="form-row">
+      <div class="field-group field-narrow">
+        <label class="field-label">数量</label>
+        <input type="number" min="0" step="0.1" value="1" class="purchase-qty" />
+      </div>
+      <div class="field-group field-narrow">
+        <label class="field-label">単位</label>
+        <select class="purchase-unit">
+          ${UNITS.map((u) => `<option value="${u}">${u}</option>`).join("")}
+        </select>
+      </div>
+      ${
+        isSeasoning
+          ? ""
+          : `<div class="field-group">
+               <label class="field-label">消費期限</label>
+               <input type="date" class="purchase-expiry" />
+             </div>`
+      }
+    </div>
+    <div class="recipe-actions">
+      <button class="primary" data-action="confirm-purchase">在庫に追加</button>
+      <button class="secondary" data-action="cancel-purchase">キャンセル</button>
+    </div>
+  `;
+
+  wrap.querySelector('[data-action="confirm-purchase"]').addEventListener("click", () => {
+    const quantity = Number(wrap.querySelector(".purchase-qty").value) || 1;
+    const unit = wrap.querySelector(".purchase-unit").value;
+    const expiryInput = wrap.querySelector(".purchase-expiry");
+    const expiryDate = expiryInput ? expiryInput.value : "";
+    if (!isSeasoning && !expiryDate) {
+      alert("消費期限を入力してください");
+      return;
+    }
+    const nextIngredients = [
+      ...store.getIngredients(),
+      {
+        id: store.uid(),
+        name: item.name,
+        category: inferCategory(item.name),
+        quantity,
+        unit,
+        expiryDate: isSeasoning ? null : expiryDate,
+        registeredAt: new Date().toISOString(),
+      },
+    ];
+    store.setIngredients(nextIngredients);
+    store.setShoppingList(store.getShoppingList().filter((i) => i.id !== item.id));
+    purchasingId = null;
+    rerender();
+  });
+
+  wrap.querySelector('[data-action="cancel-purchase"]').addEventListener("click", () => {
+    purchasingId = null;
+    rerender();
+  });
+
+  return wrap;
 }
 
 export function renderShoppingPage(container, { store, rerender }) {
@@ -63,24 +134,28 @@ export function renderShoppingPage(container, { store, rerender }) {
     list.forEach((item) => {
       const row = document.createElement("div");
       row.className = "list-item";
+      row.style.flexDirection = "column";
+      row.style.alignItems = "stretch";
       row.innerHTML = `
-        <div class="item-main" style="${item.checked ? "opacity:0.5;text-decoration:line-through;" : ""}">
-          <span class="item-name">${item.name}</span>
-          ${item.reason ? `<span class="item-sub">${item.reason}</span>` : ""}
-        </div>
-        <div style="display:flex;align-items:center;gap:8px;">
-          <input type="checkbox" ${item.checked ? "checked" : ""} data-id="${item.id}" />
-          <button class="link" data-del="${item.id}">削除</button>
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;">
+          <div class="item-main">
+            <span class="item-name">${item.name}</span>
+            ${item.reason ? `<span class="item-sub">${item.reason}</span>` : ""}
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <button class="secondary" data-buy="${item.id}">購入</button>
+            <button class="link" data-del="${item.id}">削除</button>
+          </div>
         </div>
       `;
-      row.querySelector("input[type=checkbox]").addEventListener("change", (e) => {
-        const next = store.getShoppingList().map((i) =>
-          i.id === item.id ? { ...i, checked: e.target.checked } : i
-        );
-        store.setShoppingList(next);
+      if (purchasingId === item.id) {
+        row.appendChild(renderPurchaseForm(item, { store, rerender }));
+      }
+      row.querySelector("[data-buy]").addEventListener("click", () => {
+        purchasingId = purchasingId === item.id ? null : item.id;
         rerender();
       });
-      row.querySelector("button.link").addEventListener("click", () => {
+      row.querySelector("[data-del]").addEventListener("click", () => {
         const next = store.getShoppingList().filter((i) => i.id !== item.id);
         store.setShoppingList(next);
         rerender();

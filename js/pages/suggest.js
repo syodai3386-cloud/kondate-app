@@ -61,20 +61,26 @@ function renderCalendarCard(store, rerender) {
       ${weekDates
         .map((d) => {
           const dateStr = toISODate(d);
-          const plan = mealPlans.find((p) => p.date === dateStr);
+          const plansForDay = mealPlans.filter((p) => p.date === dateStr);
           const classes = [
             "calendar-day",
             dateStr === viewState.selectedDate ? "active" : "",
             dateStr === todayStr ? "today" : "",
-            plan ? "has-plan" : "",
+            plansForDay.length > 0 ? "has-plan" : "",
           ]
             .filter(Boolean)
             .join(" ");
+          const planLabel =
+            plansForDay.length === 0
+              ? ""
+              : plansForDay.length === 1
+              ? plansForDay[0].recipeName
+              : `${plansForDay.length}件登録済み`;
           return `
             <button class="${classes}" data-date="${dateStr}">
               <span class="calendar-weekday">${WEEKDAY_LABELS[d.getDay()]}</span>
               <span class="calendar-daynum">${d.getDate()}</span>
-              ${plan ? `<span class="calendar-plan-name">${plan.recipeName}</span>` : ""}
+              ${planLabel ? `<span class="calendar-plan-name">${planLabel}</span>` : ""}
             </button>
           `;
         })
@@ -100,29 +106,81 @@ function renderCalendarCard(store, rerender) {
   return card;
 }
 
-function renderPlannedCard(plan, { store, rerender }) {
+/**
+ * 予定取り消し：作る前の状態に在庫・買い物リストを戻す。
+ */
+function cancelPlan(plan, { store, rerender }) {
+  const currentIngredients = store.getIngredients();
+  let updatedIngredients = [...currentIngredients];
+
+  (plan.matchedSnapshots || []).forEach((snap) => {
+    const idx = updatedIngredients.findIndex((i) => i.id === snap.id);
+    if (snap.leftoverQuantity === null) {
+      // 使い切り扱いだった食材：在庫に再登録する
+      if (idx === -1) {
+        updatedIngredients.push({
+          id: snap.id,
+          name: snap.name,
+          category: snap.category,
+          quantity: snap.quantity,
+          unit: snap.unit,
+          expiryDate: snap.expiryDate,
+          registeredAt: new Date().toISOString(),
+        });
+      }
+    } else if (idx !== -1) {
+      // 一部残っていた食材：元の数量に戻す
+      updatedIngredients[idx] = { ...updatedIngredients[idx], quantity: snap.quantity };
+    } else {
+      // 手動で削除済みだった場合はスナップショットの内容で復元する
+      updatedIngredients.push({
+        id: snap.id,
+        name: snap.name,
+        category: snap.category,
+        quantity: snap.quantity,
+        unit: snap.unit,
+        expiryDate: snap.expiryDate,
+        registeredAt: new Date().toISOString(),
+      });
+    }
+  });
+  store.setIngredients(updatedIngredients);
+
+  // まだ購入されていない（＝まだリストに残っている）分だけ買い物リストから取り除く
+  const shoppingIdsToRemove = new Set(plan.shoppingListIds || []);
+  if (shoppingIdsToRemove.size > 0) {
+    const nextShoppingList = store.getShoppingList().filter((i) => !shoppingIdsToRemove.has(i.id));
+    store.setShoppingList(nextShoppingList);
+  }
+
+  store.setMealPlans(store.getMealPlans().filter((p) => p.id !== plan.id));
+
+  alert(`「${plan.recipeName}」の予定を取り消し、在庫・買い物リストを元に戻しました`);
+  rerender();
+}
+
+function renderPlannedListCard(plans, { store, rerender }) {
   const card = document.createElement("div");
   card.className = "card";
-  card.innerHTML = `
-    <h2>${formatDateLabel(plan.date)}の献立</h2>
-    <div class="card recipe-card">
+  card.innerHTML = `<h2>${formatDateLabel(viewState.selectedDate)}に作る予定</h2>`;
+
+  plans.forEach((plan) => {
+    const row = document.createElement("div");
+    row.className = "card recipe-card";
+    row.innerHTML = `
       <h3>${plan.recipeName}</h3>
       <div class="tag-list">
         <span class="tag">${plan.genre}</span>
         <span class="tag">${plan.course}</span>
       </div>
-      <p class="item-sub">この日に作る予定として登録済みです</p>
       <div class="recipe-actions">
         <button class="secondary" data-action="cancel-plan">予定を取り消す</button>
       </div>
-    </div>
-  `;
-
-  card.querySelector('[data-action="cancel-plan"]').addEventListener("click", () => {
-    const next = store.getMealPlans().filter((p) => p.id !== plan.id);
-    store.setMealPlans(next);
-    alert("予定を取り消しました（在庫は自動では戻りません）");
-    rerender();
+    `;
+    row.querySelector('[data-action="cancel-plan"]').addEventListener("click", () => {
+      cancelPlan(plan, { store, rerender });
+    });
+    card.appendChild(row);
   });
 
   return card;
@@ -204,8 +262,19 @@ function renderRecipeCard({ recipe, reasons }, { store, rerender, dateStr }) {
 
   function commitPlan(matched, leftoverMap) {
     const currentIngredients = store.getIngredients();
+
+    // 更新前のスナップショットを保存しておく（取り消し時の復元に使う）
+    const matchedSnapshots = matched.map((item) => ({
+      id: item.id,
+      name: item.name,
+      category: item.category,
+      quantity: item.quantity,
+      unit: item.unit,
+      expiryDate: item.expiryDate,
+      leftoverQuantity: leftoverMap.has(item.id) ? leftoverMap.get(item.id) : null,
+    }));
+
     const matchedIds = new Set(matched.map((m) => m.id));
-    const consumedIds = matched.filter((m) => !leftoverMap.has(m.id)).map((m) => m.id);
     const updatedIngredients = currentIngredients
       .filter((i) => !matchedIds.has(i.id) || leftoverMap.has(i.id))
       .map((i) => (leftoverMap.has(i.id) ? { ...i, quantity: leftoverMap.get(i.id) } : i));
@@ -235,7 +304,8 @@ function renderRecipeCard({ recipe, reasons }, { store, rerender, dateStr }) {
       recipeName: recipe.name,
       genre: recipe.genre,
       course: recipe.course,
-      consumedIngredientIds: consumedIds,
+      matchedSnapshots,
+      shoppingListIds: shoppingAdditions.map((a) => a.id),
       createdAt: new Date().toISOString(),
     });
     store.setMealPlans(mealPlans);
@@ -320,11 +390,10 @@ function renderRecipeCard({ recipe, reasons }, { store, rerender, dateStr }) {
 export function renderSuggestPage(container, { store, rerender }) {
   container.appendChild(renderCalendarCard(store, rerender));
 
-  const existingPlan = store.getMealPlans().find((p) => p.date === viewState.selectedDate);
+  const plansForDate = store.getMealPlans().filter((p) => p.date === viewState.selectedDate);
 
-  if (existingPlan) {
-    container.appendChild(renderPlannedCard(existingPlan, { store, rerender }));
-    return;
+  if (plansForDate.length > 0) {
+    container.appendChild(renderPlannedListCard(plansForDate, { store, rerender }));
   }
 
   container.appendChild(renderCourseFilterCard(store, rerender));
@@ -335,7 +404,9 @@ export function renderSuggestPage(container, { store, rerender }) {
   container.appendChild(wrap);
 
   (async () => {
-    const recipes = await fetchRecipes();
+    const allRecipes = await fetchRecipes();
+    const plannedRecipeIds = new Set(plansForDate.map((p) => p.recipeId));
+    const recipes = allRecipes.filter((r) => !plannedRecipeIds.has(r.id));
     const ingredients = store.getIngredients();
     const profile = store.getProfile();
     const requests = store.getRequests();
