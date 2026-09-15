@@ -137,6 +137,7 @@ h2 {
 .field-group select,
 .form-row input,
 .form-row select {
+  height: 36px;
   padding: 7px 9px;
   border: 1.5px solid var(--border);
   border-radius: 8px;
