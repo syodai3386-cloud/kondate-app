@@ -2700,5 +2700,33 @@
     "allergens": ["大豆"],
     "steps": ["米は洗ってざるにあげる", "鶏もも肉(300g)は酒・ナンプラー・生姜・塩で下味をつける", "炊飯釜に米・鶏肉・長ねぎの青い部分を入れ通常通り炊飯する", "長ねぎ・酢・砂糖・醤油・ナンプラー・味噌のタレを添えて完成"],
     "imageUrl": "https://image.space.rakuten.co.jp/d/strg/ctrl/3/265e3801d33a302fae868d98dc70959f494f1955.21.9.3.3.jpg", "sourceUrl": "https://recipe.rakuten.co.jp/recipe/1190021571/"
+  },
+  {
+    "id": "r264", "name": "簡単グリーンカレー", "genre": "その他", "tags": ["エスニック料理", "鶏肉", "ごちそう"], "servings": 2,
+    "ingredients": [{ "name": "鶏肉", "category": "肉", "amount": "250g" }, { "name": "なす", "category": "野菜", "amount": "1本" }, { "name": "ピーマン", "category": "野菜", "amount": "1個" }],
+    "allergens": [],
+    "steps": ["鶏もも肉(250g)は一口大、なす(1本)は輪切り、ピーマン(1個)は細切りにする", "グリーンカレーペーストを油で炒める", "鶏肉を加えて炒める", "ココナッツミルク・ナンプラー・砂糖・野菜を加えて煮込んで完成"],
+    "imageUrl": "https://image.space.rakuten.co.jp/d/strg/ctrl/3/cdc775f860420a48e44a9888acada13a93031b25.81.2.3.2.jpg", "sourceUrl": "https://recipe.rakuten.co.jp/recipe/1200010691/"
+  },
+  {
+    "id": "r265", "name": "贅沢牛肉のシチュー", "genre": "洋食", "tags": ["牛肉", "おもてなし", "ごちそう"], "servings": 2,
+    "ingredients": [{ "name": "牛肉", "category": "肉", "amount": "300g" }, { "name": "玉ねぎ", "category": "野菜", "amount": "0.5個" }, { "name": "人参", "category": "野菜", "amount": "0.5本" }],
+    "allergens": ["乳"],
+    "steps": ["牛肉(300g)は下茹でしてアクを取る", "玉ねぎ(0.5個)・人参(0.5本)を炒める", "トマト・赤ワイン・ウスターソース・コンソメ・砂糖・塩こしょうを加えて煮込む", "生クリームを加えて仕上げて完成"],
+    "imageUrl": "https://image.space.rakuten.co.jp/d/strg/ctrl/3/0e85f36ed7d4d91c76cf2e085d899b3b9ae51485.12.2.3.2.jpg", "sourceUrl": "https://recipe.rakuten.co.jp/recipe/1510021106/"
+  },
+  {
+    "id": "r266", "name": "鶏のたたき", "genre": "和食", "tags": ["鶏肉", "おもてなし", "さっぱり"], "servings": 2,
+    "ingredients": [{ "name": "鶏肉", "category": "肉", "amount": "300g" }],
+    "allergens": ["大豆"],
+    "steps": ["鶏もも肉(300g)は塩をふる", "フライパンで表面だけ強火で焼く", "氷水にとって冷やし薄切りにする", "すり生姜・青ねぎ・ポン酢をかけて完成"],
+    "imageUrl": "https://image.space.rakuten.co.jp/d/strg/ctrl/3/e19cf6e116aa0b374eb84b30752e0ebce7d2f913.57.2.3.2.jpg", "sourceUrl": "https://recipe.rakuten.co.jp/recipe/1780016280/"
+  },
+  {
+    "id": "r267", "name": "えびとアボカドのマヨ和え", "genre": "洋食", "tags": ["えび", "アボカド", "時短", "おもてなし"], "servings": 2,
+    "ingredients": [{ "name": "えび", "category": "魚", "amount": "150g" }, { "name": "アボカド", "category": "野菜", "amount": "1個" }],
+    "allergens": ["えび", "卵"],
+    "steps": ["えび(150g)は下茹でする", "アボカド(1個)は角切りにする", "マヨネーズ・塩こしょう・レモン汁を混ぜる", "えびとアボカドを和えて完成"],
+    "imageUrl": "https://image.space.rakuten.co.jp/d/strg/ctrl/3/91fa67c72366c36a3402505cac1c177188d5c3e8.41.2.3.2.jpg", "sourceUrl": "https://recipe.rakuten.co.jp/recipe/1980022946/"
   }
 ]
