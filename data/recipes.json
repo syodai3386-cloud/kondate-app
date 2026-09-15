@@ -2672,5 +2672,33 @@
     "allergens": ["大豆"],
     "steps": ["里芋(8個)は洗って一口大に切る", "豚肉(150g)・ごぼう(0.3本)・厚揚げ(1枚)を用意する", "鍋で豚肉を炒め、里芋・ごぼう・きのこを加える", "味噌・かつおだし・酒・醤油を加えて煮込んで完成"],
     "imageUrl": "https://image.space.rakuten.co.jp/d/strg/ctrl/3/caa137a9e3b013500ab10bf62df18d5fe99a8b3d.56.9.3.3.jpg", "sourceUrl": "https://recipe.rakuten.co.jp/recipe/1360004023/"
+  },
+  {
+    "id": "r260", "name": "豚肉のっけ冷麺", "genre": "中華", "tags": ["韓国料理", "麺類", "夏", "さっぱり"], "servings": 2,
+    "ingredients": [{ "name": "豚肉", "category": "肉", "amount": "150g" }, { "name": "きゅうり", "category": "野菜", "amount": "1本" }, { "name": "卵", "category": "卵・乳", "amount": "2個" }],
+    "allergens": ["卵"],
+    "steps": ["豚こま切れ肉(150g)は焼肉のタレで炒める", "きゅうり(1本)は千切り、卵(2個)は茹でる", "冷麺を表示通り茹でて冷水で締める", "冷麺のタレをかけ具材をのせて完成"],
+    "imageUrl": "https://image.space.rakuten.co.jp/d/strg/ctrl/3/9711ed11e24596d43612fdef25085647c0abe778.44.2.3.2.jpg", "sourceUrl": "https://recipe.rakuten.co.jp/recipe/1160042528/"
+  },
+  {
+    "id": "r261", "name": "炊飯器でホロホロ参鶏湯", "genre": "中華", "tags": ["韓国料理", "鶏肉", "体が温まる"], "servings": 2,
+    "ingredients": [{ "name": "鶏肉", "category": "肉", "amount": "400g" }],
+    "allergens": ["大豆"],
+    "steps": ["鶏もも肉(400g)・長ねぎ・きのこを炊飯釜に入れる", "米・水・鶏がらスープの素・にんにく・生姜・胡椒・紹興酒・みりんを加える", "通常通り炊飯する", "ねぎを散らして完成"],
+    "imageUrl": "https://image.space.rakuten.co.jp/d/strg/ctrl/3/6d7b90e46e8a10631b8b93e777fc3402485dd54d.62.2.3.2.jpg", "sourceUrl": "https://recipe.rakuten.co.jp/recipe/1360015146/"
+  },
+  {
+    "id": "r262", "name": "テンジャンチゲ", "genre": "中華", "tags": ["韓国料理", "体が温まる", "ヘルシー"], "servings": 2,
+    "ingredients": [{ "name": "ズッキーニ", "category": "野菜", "amount": "0.5本" }, { "name": "じゃがいも", "category": "野菜", "amount": "1個" }, { "name": "玉ねぎ", "category": "野菜", "amount": "0.3個" }, { "name": "豆腐", "category": "豆腐・大豆製品", "amount": "0.5丁" }],
+    "allergens": ["大豆"],
+    "steps": ["ズッキーニ(0.5本)・じゃがいも(1個)・玉ねぎ(0.3個)は食べやすく切る", "だし汁で野菜を煮る", "コチュジャン・味噌・おろしにんにくを溶き入れる", "豆腐(0.5丁)を加えて完成"],
+    "imageUrl": "https://image.space.rakuten.co.jp/d/strg/ctrl/3/205acd22168ffb8fb899e804e80c3a2a69000154.73.2.3.2.jpg", "sourceUrl": "https://recipe.rakuten.co.jp/recipe/1320009768/"
+  },
+  {
+    "id": "r263", "name": "本格カオマンガイ", "genre": "その他", "tags": ["エスニック料理", "鶏肉", "ご飯もの"], "servings": 2,
+    "ingredients": [{ "name": "鶏肉", "category": "肉", "amount": "300g" }],
+    "allergens": ["大豆"],
+    "steps": ["米は洗ってざるにあげる", "鶏もも肉(300g)は酒・ナンプラー・生姜・塩で下味をつける", "炊飯釜に米・鶏肉・長ねぎの青い部分を入れ通常通り炊飯する", "長ねぎ・酢・砂糖・醤油・ナンプラー・味噌のタレを添えて完成"],
+    "imageUrl": "https://image.space.rakuten.co.jp/d/strg/ctrl/3/265e3801d33a302fae868d98dc70959f494f1955.21.9.3.3.jpg", "sourceUrl": "https://recipe.rakuten.co.jp/recipe/1190021571/"
   }
 ]
